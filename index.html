@@ -3,14 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
     <title>Document</title>
 </head>
 <body>
-    <h2>
-        Time Tracker
+    <!-- <section id="Login" >
 
-    </h2>
-
+    <div class="l-form">
     
+        <h2>Login Page</h2>
+        <form action="">
+            <label>
+                Username
+            </label>
+            <input />
+
+            <label>
+                Password
+            </label>
+        </form>
+        
+    </div>
+    </section> -->
+
+    <nav>
+        <div class="date-time">
+            <div class="time"></div>
+            <div class="date"></div>
+        </div>
+
+
+        <div class="search">
+
+            <div class="search-bar">
+                <form>
+                    <input type="text" placeholder="Search">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <div id="streak-badge">
+                  
+                <div id="streak-days">Day 1</div>
+                <div id="badge-icon">
+                    <img src="assets/svg/career-2-6.svg" alt="streak-icon">
+                </div>
+                
+            </div>
+
+
+        </div>
+
+    </nav>
+
+    <aside> </aside>
+
+    <main>
+        <section id="activeTaskPanel" class="active-task-panel ">
+            <!-- <div class="active-task-header">
+                <h2>Currently working on</h2>
+            </div>
+            <div class="active-task">
+                <p><strong>Task:</strong> <span id="activeTaskName"></span></p>
+                <strong>Priority:</strong>
+                <div class="active-task-timer" id="activeTaskTimer">00:00:00</div>
+                    <span class="priority-circle" id="activeTaskPriorityCircle"></span>
+                    <span id="activeTaskPriority" class="priority-text"></span>
+
+                 </p>
+                <p><strong>Tag:</strong><span id="activeTaskTag" class="tag"></span></p>
+                <p><strong>Tag:</strong><span id="activeTaskTag" class="tag"></span></p> -->
+          <!--  </div>
+            <div class="active-task-actions">
+                <button id="pauseActiveTask">Pause Task</button>
+                <button id="endActiveTask">End Task</button>
+            </div> -->
+
+            <div class="active-task-details">
+                <h2>Task Name:</h2>
+                <h2>Priority:</h2>
+                <h2>Start Date:</h2>
+                <h2>Target Date</h2>
+            </div>
+
+            <div class="active-task">
+                <div class="timer-outer-circle">
+                    <h1 id="timer">00:00:00</h1>
+                </div>
+                <div class="control-btns">
+                  
+                        <button id="start-btn" onclick="timerStart()">Start</button>
+                        <button id="pause-btn" onclick="timerPause()">Pause</button>
+                        <button id="end-btn" onclick="timerEnd()">End</button>
+                  
+                </div>
+            </div>
+ 
+            <div class="ongoing-task"></div> 
+            <div class="completed-task"></div>
+
+        </section>
+
+        <section id="noActiveTaskPanel" class="no-active-task hidden">
+            <p>No Active Tasks</p>
+        </section>
+        
+        <section class="task-table">
+            <table id="taskTable">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Task Name</th>
+                        <th>Priority</th>
+                        <th>Tag</th>
+                        <th>Start Date</th>
+                        <th>Status
+                        <th>End Date</th>
+                        <th>Time taken</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                    <!-- <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><button>More details</button></td>
+                    </tr> -->
+                </tbody>
+            </table>
+
+            <!-- <div id="detailsPanel" class="details-panel">
+                <h3>Task Details</h3>
+                
+            </div> -->
+
+            <button id="new-task">New Task</button>
+        </section>
+    </main>
+    <!-- <div>
+        <canvas id="myChart"></canvas>
+    </div> -->
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <script src="script.js"></script>
+      <script src="task.js"></script> 
+      <script src="timer.js"></script>
+      <script src="dateAndTime.js"></script>
+      
 </body>
-</html
+</html>
