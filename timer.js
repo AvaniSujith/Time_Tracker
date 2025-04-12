@@ -56,3 +56,4 @@ function timerEnd(){
 
     displayTime.innerHTML = "00:00:00"
 }
+

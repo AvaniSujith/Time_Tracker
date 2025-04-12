@@ -66,4 +66,4 @@ document.getElementById("new-task").addEventListener("click", () => {
         addNewTask()
 
     }
-})
+});

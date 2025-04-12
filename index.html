@@ -8,7 +8,9 @@
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    <title>Document</title>
+    <title>Time Tracker</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
     <!-- <section id="Login" >
@@ -30,7 +32,7 @@
     </div>
     </section> -->
 
-    <nav>
+    <nav class="header-nav">
         <div class="date-time">
             <div class="time"></div>
             <div class="date"></div>
@@ -60,7 +62,53 @@
 
     </nav>
 
-    <aside> </aside>
+    <aside> 
+
+        <header class="sidebar-header">
+            <a href="" class="header-logo">
+                <img src="" alt="icon">
+            </a>
+        </header>
+
+        <button class="toggler">
+            <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list primary-nav">
+                <li class="nav-item">
+                    <a href="" class="active">
+                        <i class="bx bxs-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="">
+                        <i class="bx bx-time"></i>
+                        <span>Time report</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="">
+                        <i class="bx bx-chart"></i>
+                        <span>Comparison</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="">
+                        <i class="bx bx-calender"></i>
+                        <span>Calender</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="">
+                        <i class="bx bx-cog"></i>
+                        <span>Setting</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 
     <main>
         <section id="activeTaskPanel" class="active-task-panel ">
@@ -84,10 +132,11 @@
             </div> -->
 
             <div class="active-task-details">
-                <h2>Task Name:</h2>
-                <h2>Priority:</h2>
-                <h2>Start Date:</h2>
-                <h2>Target Date</h2>
+                <p>Task Name:</p>
+                <p>Priority:</p>
+                <p>Start Date:</p>
+                <p>Target Date</p>
+                <p><button>More</button></p>
             </div>
 
             <div class="active-task">
@@ -103,8 +152,18 @@
                 </div>
             </div>
  
-            <div class="ongoing-task"></div> 
-            <div class="completed-task"></div>
+            <div class="task-card">
+                <div id="ongoing-count">0</div>
+                <div class="task-label">Ongoing Tasks</div>
+            </div> 
+            <div class="task-card">
+                <div id="completed-count">0</div>
+                <div class="task-label">Completed Tasks</div>
+            </div>
+            <div class="task-card">
+                <div id="total-count">0</div>
+                <div class="task-label">Total Tasks</div>
+            </div>
 
         </section>
 
@@ -124,7 +183,7 @@
                         <th>Status
                         <th>End Date</th>
                         <th>Time taken</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="taskTableBody">
