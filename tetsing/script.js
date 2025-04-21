@@ -1455,6 +1455,8 @@
 
 // main.js - Fixed version with improved functionality
 
+
+
 const addNew = document.getElementById("addTaskBtn");
 const moreBtn = document.getElementById("moreBtn");
 const taskOptions = document.getElementById("taskOptions");

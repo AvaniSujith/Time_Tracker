@@ -1,259 +1,3 @@
-// const addNew = document.getElementById("addTaskBtn");
-
-// addNew.addEventListener("click", () => {
-//     addNewTaskForm()
-// })
-
-// function addNewTaskForm(){
-//     const taskForm = document.createElement("div");
-//     // taskForm.id = "newTaskForm"
-//     taskForm.classList.add("modal");
-
-
-//     taskForm.innerHTML = `
-//     <div class="modal-content">
-
-//         <span class="close">&times;</span>
-//         <h2>New Task</h2>
-
-//         <input type="text" id="taskName" placeholder="Task Name" required>
-
-//         <select id="priority">
-//             <option value="high">High</option>
-//             <option value="medium">Medium</option>
-//             <option value="low">Low</option>
-//         </select>
-
-//         <input type="text" id="tag" placeholder="Tag" required>
-//         <input type="date" id="startDate" >
-
-//         <select id="status">
-//             <option value="ongoing" selected> Ongoing </option>
-//             <option value="paused">Paused</option>
-//             <option value="completed">Completed</option>
-//         </select>
-
-//         <input type="date" id="targetTime" placeholder="Target Time" required>
-//         <input type="text" id="details" placeholder="Details" required>
-
-//         <button id="addTaskBtnModal">Add Task</button>
-
-//     </div>
-//     `;
-
-//     // const section = document.querySelector(".task-table");
-//     // section.insertBefore(taskForm, document.getElementById("taskTable"));
-
-//     document.body.appendChild(taskForm);
-//     taskForm.style.display = "block";
-
-//     taskForm.querySelector(".close").onclick = () => taskForm.remove();
-
-//     taskForm.querySelector("#addTaskBtnModal").onclick = () => {
-//         addNewTask(taskForm);
-//         taskForm.remove();
-//     }
-// };
-
-
-// // function addNewTask() {
-// //     const name = document.getElementById("taskName").value;
-// //     const priority = document.getElementById("priority").value;
-// //     const tag = document.getElementById("tag").value;
-// //     const startDate = document.getElementById("startDate").value;
-// //     const status = document.getElementById("status").value;
-// //     const targetTime = document.getElementById("targetTime").value;
-// //     const details = document.getElementById("details").value;
-
-// //     const task = document.createElement("div");
-// //     task.className = "task";
-// //     task.innerHTML = `
-// //         <h3>Ongoing Task</h3>
-// //         <p><strong>Name:</strong>${name}</p>
-// //         <p><strong>Priority:</strong> ${priority}</p>
-// //         <p><strong>Tag:</strong> ${tag}</p>
-// //         <p><strong>Start Date:</strong> ${startDate}</p>
-// //         <p><strong>Status:</strong> ${status}</p>
-// //         <p><strong>Target Time:</strong> ${targetTime}</p>
-// //         <p><strong>Details:</strong> ${details}</p>
-// //     `;
-
-// //     // document.querySelector(".active-task-panel").appendChild(task);
-// //     document.getElementById("taskList").appendChild(task);
-// // }
-
-// function addNewTask(taskForm) {
-//     // const taskName = document.getElementById("taskName").value;
-//     // const priority = document.getElementById("priority").value; 
-//     // const tag = document.getElementById("tag").value; 
-//     // const startDate = document.getElementById("startDate").value; 
-//     // const status = document.getElementById("status").value;
-//     // const targetTime = document.getElementById("targetTime").value;
-//     // const details = document.getElementById("details").value; 
-
-//     const taskName = taskForm.querySelector("#taskName").value; 
-//     const priority = taskForm.querySelector("#priority").value;
-//     const tag = taskForm.querySelector("#tag").value;
-//     const startDate = taskForm.querySelector("#startDate").value;
-//     const status = taskForm.querySelector("#status").value;
-//     const targetTime = taskForm.querySelector("#targetTime").value;
-//     const details = taskForm.querySelector("#details").value;
-
-//     // const taskList = document.getElementById("taskList");
-//     const taskId = Date.now().toString();
-
-//     const task = {
-//         id: taskId,
-//         name: taskName,
-//         tag,
-//         priority,
-//         startDate,
-//         status,
-//         targetTime,
-//         details,
-//         timeFragments: []
-//     };
-
-//     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-//     const ongoing = tasks.find(t => t.status === "ongoing");
-
-//     if(ongoing){
-//         ongoing.status = "paused";
-//     }
-
-//     task.status = "ongoing";
-//     tasks.push(task);
-
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//     setOngoingTask(task);
-//     renderTaskList();
-
-// }
-
-
-
-// function setOngoingTask(task){
-//     document.getElementById("displayTaskName").textContent = task.name;
-//     document.getElementById("displayTag").textContent = task.tag;
-//     document.getElementById("displayPriority").textContent = task.priority;
-//     document.getElementById("displayStartDate").textContent = task.startDate;
-//     document.getElementById("displayStatus").textContent = task.status;
-//     document.getElementById("displayTargetTime").textContent = task.targetTime;
-//     // document.getElementById("displayTaskName").textContent = taskName;
-
-// }
-//     // task.innerHTML = `
-//     //     <h3>${taskName}</h3>
-//     //     <p><strong>Tag:</strong> ${tag}</p>
-//     //     <p><strong>Priority:</strong> ${priority}</p>
-//     //     <p><strong>Start Date:</strong> ${startDate}</p>
-//     //     <p><strong>Status:</strong> ${status}</p>
-//     //     <p><strong>Target Time:</strong> ${targetTime}</p>
-//     //     <p><strong>Details:</strong> ${details}</p>
-//     // `;
-
-//     // taskList.appendChild(task);
-
-
-
-  
-
-//     // // if(!name|| !startDate || !status || !timeTaken){
-//     // //     alert("Please fill all required ")
-//     // //     return;,
-//     // // }
-
-    
-//     // tasks.push(newTask);
-//     // tableData();
-
-// // document.getElementById("new-task").addEventListener("click", () => {
-// //     if(!document.getElementById("newTaskForm")){
-// //         addNewTaskForm()
-// //         addNewTask()
-
-// //     }
-// // });
-
-
-// function renderTaskList() {
-//     const taskList = document.getElementById("taskList");
-//     taskList.innerHTML = "";
-//     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-//     tasks.filter(t => t.status === "paused").forEach(task => {
-//         const taskCard = document.createElement("div");
-//         taskCard.className = "task-card";
-//         taskCard.innerHTML = `
-//             <h3>${task.name}</h3>
-//             <p><strong>Tag:</strong> ${task.tag}</p>
-//             <p><strong>Priority:</strong> ${task.priority}</p>
-//             <p><strong>Start:</strong> ${task.startDate}</p>
-//             <p><strong>Target:</strong> ${task.targetTime}</p>
-//             <button onclick="resumeTask('${task.id}')">Resume</button>
-//             <button onclick="viewTaskDetails('${task.id}')">Details</button>
-//             <button onclick="completeTask('${task.id}')">Complete</button>
-//             <button onclick="deleteTask('${task.id}')">Delete</button>
-//         `;
-//         taskList.appendChild(taskCard);
-//     });
-// }
-
-// function viewTaskDetails(id) {
-//     const tasks = JSON.parse(localStorage.getItem("tasks"));
-//     const task = tasks.find(t => t.id === id);
-//     if (!task) return;
-
-//     let modal = document.createElement("div");
-//     modal.classList.add("modal");
-//     modal.innerHTML = `
-//         <div class="modal-content">
-//             <span class="close">&times;</span>
-//             <h3>Task Details</h3>
-//             <p><strong>Name:</strong> ${task.name}</p>
-//             <p><strong>Details:</strong> ${task.details}</p>
-//             <h4>Time Fragments</h4>
-//             ${task.timeFragments.map(f => `
-//                 <div>
-//                     <p><strong>Start:</strong> ${new Date(f.start).toLocaleString()}</p>
-//                     <p><strong>End:</strong> ${new Date(f.end).toLocaleString()}</p>
-//                     <p><strong>Duration:</strong> ${f.duration}</p>
-//                 </div>
-//             `).join("")}
-//         </div>
-//     `;
-//     document.body.appendChild(modal);
-//     modal.style.display = "block";
-//     modal.querySelector(".close").onclick = () => modal.remove();
-// }
-
-// function resumeTask(id) {
-//     let tasks = JSON.parse(localStorage.getItem("tasks"));
-//     tasks.forEach(t => t.status = (t.id === id ? "ongoing" : t.status === "ongoing" ? "paused" : t.status));
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//     renderTaskList();
-//     const resumedTask = tasks.find(t => t.id === id);
-//     setOngoingTask(resumedTask);
-// }
-
-// function completeTask(id) {
-//     let tasks = JSON.parse(localStorage.getItem("tasks"));
-//     const task = tasks.find(t => t.id === id);
-//     task.status = "completed";
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//     renderTaskList();
-// }
-
-// function deleteTask(id) {
-//     let tasks = JSON.parse(localStorage.getItem("tasks"));
-//     tasks = tasks.filter(t => t.id !== id);
-//     localStorage.setItem("tasks", JSON.stringify(tasks));
-//     renderTaskList();
-// }
-
-// renderTaskList();
-
-
 
 
 const addNew = document.getElementById("addTaskBtn");
@@ -365,6 +109,128 @@ viewDetailsBtn.addEventListener("click", ()=>{
 
 
 
+function updateTimerDisplay(){
+    let hrs = hours < 10 ? "0" + hours : hours;
+    let min = minutes < 10 ? "0" + minutes : minutes;
+    let sec = seconds < 10 ? "0" + seconds : seconds;
+
+    timerDisplay.textContent = `${hrs}:${min}:${sec}`;
+
+}
+
+
+function stopWatch(){
+    seconds++;
+    if(seconds === 60){
+        seconds = 0;
+        minutes++;
+        if(minutes === 60){
+            minutes = 0;
+            hours++;
+        }
+    }
+    updateTimerDisplay();
+}
+
+
+function timerStart(){
+    const activeTaskId = localStorage.getItem("activeTaskId");
+
+    if(!activeTaskId){
+        alert("Please select or create a task first");
+        return;
+    }
+
+    if(timer !== null){
+        clearInterval(timer);
+    }
+
+    if(!localStorage.getItem("timerStartTime")){
+        localStorage.setItem("timerStartTime", new Date().toISOString())
+    }
+
+    timer = setInterval(stopWatch, 1000);
+
+
+    startTimerBtn.disabled = true;
+    pauseTimerBtn.disabled = false;
+    endTimerBtn.disabled = false;
+}
+
+
+function timerPause(){
+
+    clearInterval(timer);
+    timer = null;
+
+    const activeTaskId = localStorage.getItem("activeTaskId");
+    if(activeTaskId){
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const activeTask = tasks.find(t => t.id === activeTaskId);
+
+        if(activeTask){
+            saveTimerState(activeTask);
+        }
+    }
+
+    localStorage.removeItem("timerStartTime");
+
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+
+}
+
+
+function timerEnd() {
+    clearInterval(timer);
+    timer = null;
+    
+    localStorage.removeItem("timerStartTime");
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    updateTimerDisplay();
+    
+   
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+    endTimerBtn.disabled = true;
+}
+
+function initializeTimer() {
+    const activeTaskId = localStorage.getItem("activeTaskId");
+    
+    if (activeTaskId) {
+        const timerStartTime = localStorage.getItem("timerStartTime");
+        if (timerStartTime) {
+           
+            const startTime = new Date(timerStartTime);
+            const now = new Date();
+            const elapsedSeconds = Math.floor((now - startTime) / 1000);
+      
+            seconds = elapsedSeconds % 60;
+            minutes = Math.floor(elapsedSeconds / 60) % 60;
+            hours = Math.floor(elapsedSeconds / 3600);
+            
+            updateTimerDisplay();
+            timerStart();
+        }
+        
+       
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const activeTask = tasks.find(t => t.id === activeTaskId);
+        if (activeTask) {
+            setOngoingTask(activeTask);
+        }
+    } else {
+        clearOngoingTaskDisplay();
+    }
+}
+
+startTimerBtn.addEventListener("click", timerStart);
+pauseTimerBtn.addEventListener("click", timerPause);
+endTimerBtn.addEventListener("click", timerEnd);
+
 
 function addNewTaskForm(){
     const taskForm = document.createElement("div");
@@ -414,6 +280,11 @@ function addNewTaskForm(){
                         <input type="date" id="targetDate" required>
                     </div>
 
+                    <div class="form-group">
+                         <label for="details">Details</label>
+                         <textarea id="details" rows="3" placeholder="Enter task details..."></textarea>
+                    </div>
+
                     <div class="form-actions">
                         <button type="button" id="addTaskBtnModal" class="btn-primary">Add Task</button>
                     </div>
@@ -427,12 +298,12 @@ function addNewTaskForm(){
     document.body.appendChild(taskForm);
     taskForm.style.display = "block";
 
-    taskForm.querySelector(".close").onclick = () => taskForm.remove();
+    taskForm.querySelector(".close").addEventListener("click", () => taskForm.remove());
 
-    taskForm.querySelector("#addTaskBtnModal").onclick = () => {
+    taskForm.querySelector("#addTaskBtnModal").addEventListener("click", () => {
         addNewTaskForm(taskForm);
         taskForm.remove();
-    }
+    });
 }
 
 
@@ -442,7 +313,7 @@ function addNewTask(taskForm){
     const tag = taskForm.querySelector("#tag").value;
     const startDate = taskForm.querySelector('#startDate').value;
     const status = taskForm.querySelector("#status").value;
-    const targetTime = taskForm.querySelector("#targetTime").value;
+    const targetTime = taskForm.querySelector("#targetDate").value;
     const details = taskForm.querySelector("#details").value;
 
     if(!taskName || !tag){
@@ -496,13 +367,32 @@ function addNewTask(taskForm){
 
 function saveTimerState(task){
 
-    const timerValue = document.getElementById("timer").textContent;
+    // const timerValue = document.getElementById("timer").textContent;
+
+    // const timeFragment = {
+    //     date: new Date().toISOString().split('T')[0],
+    //     start: localStorage.getItem("timerStartTime") || new Date().toISOString(),
+    //     end: new Date().toISOString(),
+    //     duration: timerValue
+    // };
+
+
+    const startTime = new Date(localStorage.getItem("timerStartTime"));
+    const endTime = new Date();
+    const elapsedMs = endTime - startTime;
+
+    const totalSeconds = Math.floor(elapsedMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const duration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
     const timeFragment = {
         date: new Date().toISOString().split('T')[0],
-        start: localStorage.getItem("timerStartTime") || new Date().toISOString(),
-        end: new Date().toISOString(),
-        duration: timerValue
+        start: startTime.toISOString(),
+        end: endTime.toISOString(),
+        duration
     };
 
     if(!task.timeFragments){
@@ -516,6 +406,14 @@ function saveTimerState(task){
         task.timeTaken = timerValue;
     }else{
         task.timeTaken = addTimes(task.timeTaken, timerValue);
+    }
+
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const index = tasks.findIndex(t => t.id === task.id);
+    if(index >= 0){
+        tasks[index] = task;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 }
 
@@ -552,7 +450,8 @@ function resetTimer(){
     minutes = 0;
     hours = 0;
 
-    timerDisplay.textContent = "00:00:00";
+    // timerDisplay.textContent = "00:00:00";
+    updateTimerDisplay();
 
     localStorage.setItem("timerStartTime", new Date().toISOString());
 
@@ -563,7 +462,7 @@ function pauseCurrentTask(){
     const activeTaskId = localStorage.getItem("activeTaskId");
     if (!activeTaskId) return;
 
-    let tasks = JSON.parse(localStorage.getItem("task")) || [];
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const task = tasks.find(t => t.id === activeTaskId);
 
     if(task){
@@ -678,7 +577,7 @@ function completeTask(taskId){
 function deleteTask(taskId){
     if(!confirm("Are you sure you want to delete this task?")) return;
 
-    let tasks = JSON.parse(localStorage.getItem("task")) || [];
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     tasks = tasks.filter(t => t.id !== taskId);
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
@@ -717,7 +616,7 @@ function setOngoingTask(task){
     document.getElementById("displayPriority").textContent = task.priority;
     document.getElementById("displayStartDate").textContent = task.startDate;
     document.getElementById("displayStatus").textContent = task.status;
-    document.getElementById("displayTargetTime").textContent = task.targetTime;
+    document.getElementById("displayTargetTime").textContent = task.targetDate || " -- ";
 
     document.getElementById("activeTaskPanel").classList.remove("hidden");
     document.getElementById("noActiveTaskPanel").classList.add("hidden");
@@ -738,10 +637,18 @@ function updateTaskCounters(){
     const ongoingCount = tasks.filter(t => t.status === "ongoing").length;
     const completedCount = tasks.filter(t => t.status === "completed").length;
 
+    const totalTimeInHours = tasks.reduce((total, task) => {
+        if(task.timeTaken){
+            const [ hours, minutes, seconds ] = task.timeTaken.split(':').map(Number);
+            return total + hours + (minutes / 60) + (seconds / 3600);
+        }
+        return total;
+    }, 0);
 
     totalCountElement.textContent = totalCount;
     ongoingCountElement.textContent = ongoingCount;
-    completedCountElement.textContent = completedCount
+    completedCountElement.textContent = completedCount;
+    timeTotalElement.textContent = totalTimeInHours.toFixed(1)
 }
 
 function renderTaskLists(){
@@ -752,6 +659,8 @@ function renderTaskLists(){
 
 function renderTaskTable(){
     const tableBody = document.getElementById('taskTableBody');
+    if(!tableBody) return;
+    
     tableBody.innerHTML = "";
 
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -796,10 +705,12 @@ function renderPausedTaskTable(){
             <td>${task.tag}</td> 
             <td>${task.status}</td>
             <td>${task.startDate}</td>
-            <td>${task.status}</td>
             <td>${task.endDate || "--"}</td>
             <td>${task.timeTaken || "00:00:00"}</td>
-            <td><button onclick="showDetailsModal('${task.id}')">More</button></td>  
+            <td>
+                <button onclick="resumeTask('${task.id}')">Resume</button>
+                <button onclick="showDetailsModal('${task.id}')">More</button>
+            </td>  
         `;
 
         pausedTableBody.appendChild(row);
@@ -807,52 +718,110 @@ function renderPausedTaskTable(){
 }
 
 
-function showDetailsModal(taskId){
+function renderCompletedTaskTable() {
+    const completedTableBody = document.getElementById('completedTaskTableBody');
+    if(!completedTableBody) return;
+
+    completedTableBody.innerHTML = "";
+
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const completedTasks = tasks.filter(t => t.status === "completed");
+
+    completedTasks.forEach((task, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${task.id.slice(-4)}</td>
+            <td>${task.name}</td>
+            <td>${task.priority}</td>
+            <td>${task.tag}</td>
+            <td>${task.startDate}</td>
+            <td>${task.endDate || "--"}</td>
+            <td>${task.timeTaken || "00:00:00"}</td>
+            <td><button onclick="showDetailsModal('${task.id}')">Details</button></td>
+        `;
+        completedTableBody.appendChild(row);
+    });
+}
+
+
+function showDetailsModal(taskId) {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const task = tasks.find(t => t.id === taskId);
 
-
     if(!task) return;
-
-
-    // const modal = document.createElement("div");
-    // modal.classList.add("modal");
 
     const detailsContainer = document.getElementById("taskDetailsContent");
 
-    detailsContainer.innerHTML = `
-
-            <span class="close">&times;</span>
-            <h2>${task.name}</h2>
-            <p><strong>Priority:</strong>${task.priority}</p>
-            <p><strong>Tag:</strong>${task.tag}</p>
-            <p><strong>Status:</strong>${task.status}</p>
-            <p><strong>Start Date:</strong>${task.startDate}</p>
-            <p><strong>End Date:</strong>${task.endDate || "--"}</p>
-            <p><strong>Target Date:</strong>${task.targetTime}</p>
-            <p><strong>Total Time Taken:</strong>${task.timeTaken || "00:00:00"}</p>
-            <p><strong>Description:</strong>${task.details}</p>
-
-
-
-            <h3>Time Details</h3>
-            <div class="time-fragments">
-                ${(task.taimeFragments || []).map(f => `
-                    <div class="time-fragment">
-                        <p>${f.date}: ${f.duration}</p>
-                    </div>
-                `).join("")}
+    let timeFragmentsHtml = '';
+    if (task.timeFragments && task.timeFragments.length > 0) {
+        timeFragmentsHtml = task.timeFragments.map(f => `
+            <div class="time-fragment">
+                <p>${f.date}: ${f.duration}</p>
             </div>
+        `).join("");
+    } else {
+        timeFragmentsHtml = '<p>No time records available</p>';
+    }
 
-           
+    let actionsHtml = '';
+    if (task.status === 'paused') {
+        actionsHtml = `
+            <div class="modal-actions">
+                <button onclick="resumeTask('${task.id}')">Resume Task</button>
+                <button onclick="editTask('${task.id}')">Edit Task</button>
+                <button onclick="completeTask('${task.id}')">Complete Task</button>
+                <button onclick="deleteTask('${task.id}')">Delete Task</button>
+            </div>
+        `;
+    } else if (task.status === 'completed') {
+        actionsHtml = `
+            <div class="modal-actions">
+                <button onclick="deleteTask('${task.id}')">Delete Record</button>
+            </div>
+        `;
+    } else {
+        actionsHtml = `
+            <div class="modal-actions">
+                <button onclick="editTask('${task.id}')">Edit Task</button>
+                <button onclick="deleteTask('${task.id}')">Delete Task</button>
+            </div>
+        `;
+    }
+
+    detailsContainer.innerHTML = `
+        <span class="close">&times;</span>
+        <h2>${task.name}</h2>
+        <p><strong>Priority:</strong> ${task.priority}</p>
+        <p><strong>Tag:</strong> ${task.tag}</p>
+        <p><strong>Status:</strong> ${task.status}</p>
+        <p><strong>Start Date:</strong> ${task.startDate}</p>
+        <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
+        <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
+        <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
+        <p><strong>Description:</strong> ${task.details || "No description provided"}</p>
+
+        <h3>Time Details</h3>
+        <div class="time-fragments">
+            ${timeFragmentsHtml}
+        </div>
+
+        ${actionsHtml}
     `;
 
-    // modal.querySelector(".close").onclick = () => modal.remove();
-    // document.body.appendChild(modal);
+   
+    detailsContainer.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            taskDetailsModal.style.display = "none";
+        });
+    });
+
+
 
     taskDetailsModal.style.display = "block";
-
 }
+
+
 
 function editTask(taskId) {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -899,7 +868,7 @@ function editTask(taskId) {
             
                 <div class="form-group">
                     <label for="editTargetDate">Target Completion Date</label>
-                    <input type="date" id="editTargetDate" value="${task.targetDate}" required>
+                    <input type="date" id="editTargetDate" value="${task.targetDate || ''}" required>
                 </div>
                 
                 <div class="form-group">
@@ -922,12 +891,11 @@ function editTask(taskId) {
     editForm.querySelector("#saveTaskBtn").addEventListener("click", () => {
         updateTaskData(taskId, editForm);
         editForm.remove();
-
     });
-
 }
 
-function updateTaskDate(taskId, editForm){
+
+function updateTaskData(taskId, editForm){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const taskIndex = tasks.findIndex(t => t.id === taskId);
 
@@ -937,13 +905,6 @@ function updateTaskDate(taskId, editForm){
     const newStatus = editForm.querySelector("#editStatus").value;
     const oldStatus = task.status;
 
-    // task.name = modal.querySelector("#editTaskName").value;
-    // task.priority = modal.querySelector("#editPriority").value;
-    // task.tag = modal.querySelector("#editTag").value;
-    // task.startDate = modal.querySelector("#editStartDate").value;
-    // task.status = modal.querySelector("#editStatus").value;
-    // task.targetDate = modal.querySelector("#editTargetTime").value;
-    // task.details = modal.querySelector("#editDetails").value;
     
     task.name = editForm.querySelector("#editTaskName").value;
     task.priority = editForm.querySelector("#editPriority").value;
@@ -982,108 +943,513 @@ function updateTaskDate(taskId, editForm){
     updateTaskCounters();
     renderTaskLists();
 }
-    // modal.querySelector(".close").onclick = () => modal.remove();
-    
-//     modal.querySelector("#updateTaskBtn").onclick = () => {
-//         const name = modal.querySelector("#editTaskName").value;
-//         const priority = modal.querySelector("#editPriority").value;
-//         const tag = modal.querySelector("#editTag").value;
-//         const startDate = modal.querySelector("#editStartDate").value;
-//         const status = modal.querySelector("#editStatus").value;
-//         const targetTime = modal.querySelector("#editTargetTime").value;
-//         const details = modal.querySelector("#editDetails").value;
-        
-//         // Update task
-//         task.name = name;
-//         task.priority = priority;
-//         task.tag = tag;
-//         task.startDate = startDate;
-        
-//         // Handle status change
-//         const previousStatus = task.status;
-//         task.status = status;
-        
-//         if (previousStatus !== "ongoing" && status === "ongoing") {
-//             // Task is becoming active, set as active task
-//             const currentActive = tasks.find(t => t.id !== taskId && t.status === "ongoing");
-//             if (currentActive) {
-//                 currentActive.status = "paused";
-//                 saveTimerState(currentActive);
-//             }
-            
-//             localStorage.setItem("activeTaskId", taskId);
-//             resetTimer();
-//             setOngoingTask(task);
-            
-//             if (typeof timerStart === 'function') {
-//                 timerStart();
-//             }
-//         } else if (previousStatus === "ongoing" && status !== "ongoing") {
-//             // Task is no longer active
-//             saveTimerState(task);
-//             localStorage.removeItem("activeTaskId");
-//             clearOngoingTaskDisplay();
-            
-//             if (typeof timerEnd === 'function') {
-//                 timerEnd();
-//             }
-//         }
-        
-//         task.targetTime = targetTime;
-//         task.details = details;
-        
-//         if (status === "completed" && !task.endDate) {
-//             task.endDate = new Date().toISOString().split("T")[0];
-//         }
-        
-//         localStorage.setItem("tasks", JSON.stringify(tasks));
-//         updateTaskCounters();
-//         renderTaskLists();
-        
-//         modal.remove();
-//     };
-    
-//     document.body.appendChild(modal);
-// }
 
 
+startTimerBtn.addEventListener("click", timerStart);
+pauseTimerBtn.addEventListener("click", timerPause);
+endTimerBtn.addEventListener("click", timerEnd);
 
-function viewTaskDetails(taskId) {
-    // Navigate to a detailed view page (can be implemented later)
-    alert("Detailed view for task ID: " + taskId + " (This will be implemented in the future)");
+function renderAnalytics(){
+    renderTagDistributionChart();
+    renderPriorityDistributionChart();
 }
 
-// Initialize the task lists
-updateTaskCounters();
-renderTaskLists();
 
-// Restore active task if exists
-function restoreActiveTask() {
-    const activeTaskId = localStorage.getItem("activeTaskId");
-    if (activeTaskId) {
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const activeTask = tasks.find(t => t.id === activeTaskId && t.status === "ongoing");
-        
-        if (activeTask) {
-            setOngoingTask(activeTask);
-            
-            // Resume timer if there's an active task
-            if (typeof timerStart === 'function') {
-                timerStart();
-            }
-        } else {
-            // No valid active task, clear it
-            localStorage.removeItem("activeTaskId");
-            clearOngoingTaskDisplay();
+// Analytics functionality (continued from previous code)
+function renderTagDistributionChart() {
+    const tagChartCanvas = document.getElementById('tagChart');
+    if (!tagChartCanvas) return;
+    
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    // Count tasks by tag
+    const tagCounts = {};
+    tasks.forEach(task => {
+        if (task.tag) {
+            tagCounts[task.tag] = (tagCounts[task.tag] || 0) + 1;
         }
-    } else {
-        clearOngoingTaskDisplay();
+    });
+    
+    // Convert to arrays for chart
+    const tags = Object.keys(tagCounts);
+    const counts = Object.values(tagCounts);
+    
+    // Set up chart context
+    const ctx = tagChartCanvas.getContext('2d');
+    
+    // Clear previous chart if any
+    if (window.tagChart) {
+        window.tagChart.destroy();
+    }
+    
+    // Create chart
+    window.tagChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: tags,
+            datasets: [{
+                label: 'Tasks by Tag',
+                data: counts,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Task Distribution by Tag'
+            }
+        }
+    });
+}
+
+function renderPriorityDistributionChart() {
+    const priorityChartCanvas = document.getElementById('priorityChart');
+    if (!priorityChartCanvas) return;
+    
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    // Count tasks by priority
+    const priorityCounts = {
+        'high': 0,
+        'medium': 0,
+        'low': 0
+    };
+    
+    tasks.forEach(task => {
+        if (task.priority && priorityCounts.hasOwnProperty(task.priority)) {
+            priorityCounts[task.priority]++;
+        }
+    });
+    
+    // Set up chart context
+    const ctx = priorityChartCanvas.getContext('2d');
+    
+    // Clear previous chart if any
+    if (window.priorityChart) {
+        window.priorityChart.destroy();
+    }
+    
+    // Create chart
+    window.priorityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['High', 'Medium', 'Low'],
+            datasets: [{
+                label: 'Tasks by Priority',
+                data: [priorityCounts.high, priorityCounts.medium, priorityCounts.low],
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Task Distribution by Priority'
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Search and filter functionality
+function setupSearch() {
+    const searchInputDashboard = document.getElementById('searchTasksDashboard');
+    const searchInputCompleted = document.getElementById('searchTasksCompleted');
+    
+    if (searchInputDashboard) {
+        searchInputDashboard.addEventListener('input', () => {
+            filterTasks('dashboard', searchInputDashboard.value);
+        });
+    }
+    
+    if (searchInputCompleted) {
+        searchInputCompleted.addEventListener('input', () => {
+            filterTasks('completed', searchInputCompleted.value);
+        });
+    }
+    
+    // Set up filter buttons
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filterType = btn.getAttribute('data-filter');
+            const page = btn.closest('.page').id.replace('-page', '');
+            
+            // Remove active class from all buttons in the same group
+            btn.parentElement.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Apply filter
+            applyFilter(page, filterType);
+        });
+    });
+    
+    // Set up date range filters
+    const dateFromInput = document.getElementById('filterDateFrom');
+    const dateToInput = document.getElementById('filterDateTo');
+    
+    if (dateFromInput && dateToInput) {
+        dateFromInput.addEventListener('change', () => {
+            applyDateFilter();
+        });
+        
+        dateToInput.addEventListener('change', () => {
+            applyDateFilter();
+        });
     }
 }
 
-// Initialize everything
-window.addEventListener("DOMContentLoaded", () => {
-    restoreActiveTask();
-    updateTaskCounters();
+function filterTasks(page, searchText) {
+    const searchLower = searchText.toLowerCase();
+    
+    if (page === 'dashboard') {
+        const rows = document.querySelectorAll('#taskTableBody tr, #pausedTaskTableBody tr');
+        
+        rows.forEach(row => {
+            const taskName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const taskTag = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const taskPriority = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            
+            if (taskName.includes(searchLower) || taskTag.includes(searchLower) || taskPriority.includes(searchLower)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    } else if (page === 'completed') {
+        const rows = document.querySelectorAll('#completedTaskTableBody tr');
+        
+        rows.forEach(row => {
+            const taskName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const taskTag = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const taskPriority = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            
+            if (taskName.includes(searchLower) || taskTag.includes(searchLower) || taskPriority.includes(searchLower)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+}
+
+function applyFilter(page, filterType) {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    if (page === 'dashboard') {
+        // Re-render task tables with filter
+        if (filterType === 'all') {
+            renderTaskLists();
+        } else if (filterType === 'high' || filterType === 'medium' || filterType === 'low') {
+            // Filter by priority
+            renderFilteredTaskLists(task => task.priority === filterType);
+        } else if (filterType === 'today') {
+            // Filter by today's date
+            const today = new Date().toISOString().split('T')[0];
+            renderFilteredTaskLists(task => task.startDate === today);
+        }
+    } else if (page === 'works-done') {
+        // Re-render completed task table with filter
+        if (filterType === 'all') {
+            renderCompletedTaskTable();
+        } else if (filterType === 'high' || filterType === 'medium' || filterType === 'low') {
+            // Filter by priority
+            renderFilteredCompletedTasks(task => task.priority === filterType);
+        } else if (filterType === 'last7days') {
+            // Filter by last 7 days
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const dateString = sevenDaysAgo.toISOString().split('T')[0];
+            
+            renderFilteredCompletedTasks(task => task.endDate >= dateString);
+        }
+    }
+}
+
+function applyDateFilter() {
+    const dateFrom = document.getElementById('filterDateFrom').value;
+    const dateTo = document.getElementById('filterDateTo').value;
+    
+    if (!dateFrom && !dateTo) {
+        // Reset to show all tasks
+        renderCompletedTaskTable();
+        return;
+    }
+    
+    renderFilteredCompletedTasks(task => {
+        if (dateFrom && task.endDate < dateFrom) return false;
+        if (dateTo && task.endDate > dateTo) return false;
+        return true;
+    });
+}
+
+function renderFilteredTaskLists(filterFn) {
+    // Filter and render ongoing tasks
+    const taskTableBody = document.getElementById('taskTableBody');
+    if (taskTableBody) {
+        taskTableBody.innerHTML = "";
+        
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const filteredTasks = tasks.filter(filterFn);
+        
+        filteredTasks.forEach((task, index) => {
+            if (task.status === 'ongoing') {
+                const row = document.createElement("tr");
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${task.name}</td>
+                    <td>${task.priority}</td>
+                    <td>${task.tag}</td>
+                    <td>${task.startDate}</td>
+                    <td>${task.status}</td>
+                    <td>${task.endDate || "--"}</td>
+                    <td>${task.timeTaken || "00:00:00"}</td>
+                    <td><button onclick="showDetailsModal('${task.id}')">More</button></td>
+                `;
+                
+                taskTableBody.appendChild(row);
+            }
+        });
+    }
+    
+    // Filter and render paused tasks
+    const pausedTableBody = document.getElementById('pausedTaskTableBody');
+    if (pausedTableBody) {
+        pausedTableBody.innerHTML = "";
+        
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const filteredTasks = tasks.filter(t => t.status === "paused" && filterFn(t));
+        
+        filteredTasks.forEach((task, index) => {
+            const row = document.createElement("tr");
+            
+            // Format the last 3 time fragments
+            const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
+            
+            row.innerHTML = `
+                <td>${task.id.slice(-4)}</td>
+                <td>${task.name}</td>
+                <td>${task.priority}</td>
+                <td>${task.tag}</td>
+                <td>${task.status}</td>
+                <td>${task.startDate}</td>
+                <td>${task.endDate || "--"}</td>
+                <td>${task.timeTaken || "00:00:00"}</td>
+                <td>${timeFragmentsHtml}</td>
+                <td>
+                    <button onclick="resumeTask('${task.id}')">Resume</button>
+                    <button onclick="showDetailsModal('${task.id}')">More</button>
+                </td>
+            `;
+            
+            pausedTableBody.appendChild(row);
+        });
+    }
+}
+
+function renderFilteredCompletedTasks(filterFn) {
+    const completedTableBody = document.getElementById('completedTaskTableBody');
+    if (!completedTableBody) return;
+    
+    completedTableBody.innerHTML = "";
+    
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const filteredTasks = tasks.filter(t => t.status === "completed" && filterFn(t));
+    
+    filteredTasks.forEach((task, index) => {
+        const row = document.createElement("tr");
+        
+        row.innerHTML = `
+            <td>${task.id.slice(-4)}</td>
+            <td>${task.name}</td>
+            <td>${task.priority}</td>
+            <td>${task.tag}</td>
+            <td>${task.startDate}</td>
+            <td>${task.endDate || "--"}</td>
+            <td>${task.timeTaken || "00:00:00"}</td>
+            <td><button onclick="showDetailsModal('${task.id}')">Details</button></td>
+        `;
+        
+        completedTableBody.appendChild(row);
+    });
+}
+
+// Task export functionality for completed tasks
+function setupExportButtons() {
+    const exportCsvBtn = document.getElementById('exportCsv');
+    const exportJsonBtn = document.getElementById('exportJson');
+    
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', () => {
+            exportCompletedTasks('csv');
+        });
+    }
+    
+    if (exportJsonBtn) {
+        exportJsonBtn.addEventListener('click', () => {
+            exportCompletedTasks('json');
+        });
+    }
+}
+
+// Task reports and summary
+function generateTaskSummary() {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const summaryElement = document.getElementById('taskSummary');
+    
+    if (!summaryElement) return;
+    
+    // Count tasks by status
+    const statusCounts = {
+        ongoing: tasks.filter(t => t.status === "ongoing").length,
+        paused: tasks.filter(t => t.status === "paused").length,
+        completed: tasks.filter(t => t.status === "completed").length
+    };
+    
+    // Calculate total time spent
+    const totalSeconds = tasks.reduce((total, task) => {
+        if (task.timeTaken) {
+            const [hours, minutes, seconds] = task.timeTaken.split(':').map(Number);
+            return total + (hours * 3600) + (minutes * 60) + seconds;
+        }
+        return total;
+    }, 0);
+    
+    const totalHours = Math.floor(totalSeconds / 3600);
+    const avgCompletionTime = statusCounts.completed > 0 ? (totalSeconds / statusCounts.completed / 3600).toFixed(2) : 0;
+    
+    // Generate summary HTML
+    summaryElement.innerHTML = `
+        <div class="summary-card">
+            <h3>Task Summary</h3>
+            <p><strong>Total Tasks:</strong> ${tasks.length}</p>
+            <p><strong>Ongoing:</strong> ${statusCounts.ongoing}</p>
+            <p><strong>Paused:</strong> ${statusCounts.paused}</p>
+            <p><strong>Completed:</strong> ${statusCounts.completed}</p>
+            <p><strong>Total Hours Spent:</strong> ${totalHours.toFixed(1)}</p>
+            <p><strong>Average Completion Time:</strong> ${avgCompletionTime} hours</p>
+        </div>
+    `;
+}
+
+// Task statistics by day of week
+function renderDailyActivityChart() {
+    const activityChartCanvas = document.getElementById('activityChart');
+    if (!activityChartCanvas) return;
+    
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    // Initialize days of week counters
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysOfWeek = [0, 0, 0, 0, 0, 0, 0];
+    
+    // Count task creation by day of week
+    tasks.forEach(task => {
+        if (task.startDate) {
+            const date = new Date(task.startDate);
+            const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+            daysOfWeek[dayOfWeek]++;
+        }
+    });
+    
+    // Set up chart context
+    const ctx = activityChartCanvas.getContext('2d');
+    
+    // Clear previous chart if any
+    if (window.activityChart) {
+        window.activityChart.destroy();
+    }
+    
+    // Create chart
+    window.activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dayNames,
+            datasets: [{
+                label: 'Tasks Created',
+                data: daysOfWeek,
+                borderColor: '#4BC0C0',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Task Creation by Day of Week'
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Initialize application
+function initializeApp() {
+    // Initialize timer state
+    initializeTimer();
+    
+    // Initial render of task lists
     renderTaskLists();
-});
+    
+    // Update task counters
+    updateTaskCounters();
+    
+    // Initialize search functionality
+    setupSearch();
+    
+    
+    // Generate task summary
+    generateTaskSummary();
+    
+    // Initial render of default page
+    navLinks[0].click();
+    
+    // Set up global event handlers for modals
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+        
+        if (event.target.id === 'taskOptions') {
+            taskOptions.style.display = "none";
+        }
+    });
+}
+
+// Global function definitions for HTML access
+window.showDetailsModal = showDetailsModal;
+window.resumeTask = resumeTask;
+window.completeTask = completeTask;
+window.editTask = editTask;
+window.deleteTask = deleteTask;
+
+// Start the application when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initializeApp);

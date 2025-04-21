@@ -1,17 +1,25 @@
 
-const sidebar = document.querySelector('.sidebar-aside');
-const toggleBtn = document.querySelector(".toggler");
 
-toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("collapse")
-})
+// const sidebar = document.querySelector('.sidebar-aside');
+// const toggleBtn = document.querySelector(".toggler");
 
-
-
+// toggleBtn.addEventListener("click", () => {
+//     sidebar.classList.toggle("collapse")
+// });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
+document.addEventListener('DOMContentLoaded', function() {  //runs the funciton only after entire HTML page is loaded
+//    modal.style.display = 'none';
+
+
+    const sidebar = document.querySelector('.sidebar-aside');
+    const toggleBtn = document.querySelector(".toggler");
+
+    toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("collapse")
+    });
+
+
     const signInForm = document.getElementById('signInForm');
     const signUpForm = document.getElementById('signUpForm');
     const toggleButton = document.getElementById('toggleButton');
@@ -20,36 +28,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const signInError = document.getElementById('signInError');
     const signUpError = document.getElementById('signUpError');
     const authSection = document.querySelector('.authentication');
+    const mainContent = document.querySelector('main');
+    const mainNav = document.querySelector('.main-nav');
     
-    // Check if user is already logged in
+    // Checking if user is already logged in by using if(current);
+
+    modals.forEach(modal => {
+        modal.style.display ='none';
+    });
+
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
-      // User is logged in, hide auth section and show app
+
+    //   const userData = JSON.parse(currentUser);
+
+      // User found gettng redirected into dashboard
+
       authSection.style.display = 'none';
-      document.querySelector('nav').style.display = 'flex';
-      document.querySelector('aside').style.display = 'block';
-      document.querySelector('main').style.display = 'block';
+      mainContent.style.display = 'block';
+      sidebar.style.display = 'flex';
+      mainNav.style.display = 'flex';
+    //   document.querySelector('nav').style.display = 'flex';
+    //   document.querySelector('aside').style.display = 'block';
+    //   document.querySelector('main').style.display = 'block';
       
-      // Load user data
-      const userData = JSON.parse(currentUser);
+    
       document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
       document.getElementById('profileEmail').textContent = userData.email;
       
-      // Set join date
-      const joinDate = localStorage.getItem('joinDate') || new Date().toLocaleDateString();
-      document.getElementById('memberSince').textContent = `Member since: ${joinDate}`;
+    //   const joinDate = localStorage.getItem('joinDate') || new Date().toLocaleDateString();
+    //   document.getElementById('memberSince').textContent = `Member since: ${joinDate}`;
       
-      // Load tasks for this user
+
       loadUserTasks(userData.email);
     } else {
-      // User is not logged in, show auth section and hide app
+        
       authSection.style.display = 'flex';
-      document.querySelector('nav').style.display = 'none';
-      document.querySelector('aside').style.display = 'none';
-      document.querySelector('main').style.display = 'none';
+      mainContent.style.display = 'none';
+      sidebar.style.display = 'none';
+      mainNav.style.display = 'none';
+    //   document.querySelector('nav').style.display = 'none';
+    //   document.querySelector('aside').style.display = 'none';
+    //   document.querySelector('main').style.display = 'none';
+
+    //   document.querySelectorAll('.modal').forEach(modal => {
+    //     modal.style.display = 'none';
+    //   })
     }
     
-    // Toggle between sign in and sign up forms
+
     toggleButton.addEventListener('click', function() {
       signInForm.classList.toggle('active');
       signUpForm.classList.toggle('active');
@@ -61,11 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ? 'To keep connected with us please login with your personal info'
         : 'Enter your details and begin your self-evaluation journey';
       
-      // Clear form errors when switching
       signInError.textContent = '';
       signUpError.textContent = '';
       
-      // Move the panel
+      
       const slidingPanel = document.querySelector('.sliding-panel');
       if (isSignUp) {
         slidingPanel.style.transform = 'translateX(-100%)';
@@ -80,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // Sign In Form Submission
+   
     signInForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const email = signInForm.email.value;
@@ -492,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
               editTaskForm.dataset.taskId = task.id;
               editTaskForm.dataset.category = category;
               
-              // Show modal
+            
               editModal.style.display = 'flex';
             }
           }
@@ -673,4 +699,24 @@ document.addEventListener('DOMContentLoaded', function() {
       const options = { month: 'short', day: 'numeric', year: 'numeric' };
       return date.toLocaleDateString('en-US', options);
     }
+
+    document.querySelectorAll('.modal .close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function(){
+            const modal = this.closest('.modal');
+
+            if(modal){
+                modal.style.display = 'none'
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-open-model]').forEach(trigger => {
+        trigger.addEventListener('click', function(){
+            const targetId = this.getAttribute('data-open-modal');
+            const modal = document.getElementById(targetId);
+            if(modal){
+                modal.style.display = 'flex';
+            }
+        })
+    })
   });
