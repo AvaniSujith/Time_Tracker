@@ -1,5 +1,23 @@
 
 
+// console.log("JS is runing");
+
+const sidebar = document.querySelector('.sidebar-aside');
+const toggleBtn = document.querySelector(".toggler");
+// console.log("btn found", toggleBtn)
+
+
+// if(toggleBtn){
+// toggleBtn.addEventListener("click", () => {
+// //    sidebar.classList.toggle("collapse")
+// console.log("found")
+
+//  });
+// }else{
+//     console.log("not found")
+// }
+
+
 const addNew = document.getElementById("addTaskBtn");
 const moreBtn = document.getElementById("moreBtn");
 const taskOptions = document.getElementById("taskOptions");
@@ -7,16 +25,13 @@ const pauseTaskBtn = document.getElementById("pauseTaskBtn");
 const completeTaskBtn = document.getElementById("completeTaskBtn");
 const editTaskBtn = document.getElementById("editTaskBtn");
 const viewDetailsBtn = document.getElementById("viewDetailsBtn");
-// const closeModalBtn = document.getElementById(".close");
-const closeModalBtn = document.querySelectorAll(".close")
+const closeModalBtn = document.querySelectorAll(".close");
 const taskDetailsModal = document.getElementById("taskDetailsModal");
-
 
 const totalCountElement = document.getElementById("total-count");
 const ongoingCountElement = document.getElementById("ongoing-count");
 const completedCountElement = document.getElementById("completed-count");
-const timeTotalElement = document.getElementById("time-total");
-
+const pausedCountElement = document.getElementById("paused-count");
 
 const timerDisplay = document.getElementById("timer");
 const startTimerBtn = document.getElementById("startTimerBtn");
@@ -25,7 +40,6 @@ const endTimerBtn = document.getElementById("endTimerBtn");
 
 const navLinks = document.querySelectorAll('.nav-link[data-page]');
 const pages = document.querySelectorAll('.page');
-
 
 let timer = null;
 let seconds = 0;
@@ -38,286 +52,167 @@ navLinks.forEach(link => {
     link.addEventListener('click', () => {
         const targetPage = link.getAttribute('data-page');
 
+       
         navLinks.forEach(el => el.parentElement.classList.remove('active'));
         link.parentElement.classList.add('active');
 
+       
         pages.forEach(page => {
             if(page.id === `${targetPage}-page`){
                 page.classList.add('active');
-            }else{
+            } else {
                 page.classList.remove('active');
             }
         });
 
-
         if(targetPage === 'works-done'){
             renderCompletedTaskTable();
-        }else if(targetPage === 'analytics'){
+        } else if(targetPage === 'analytics'){
             renderAnalytics();
+        } else if(targetPage === 'dashboard') {
+            renderPausedTaskTable();
         }
     });
 });
-
-
 
 
 addNew.addEventListener("click", () => {
     addNewTaskForm();
 });
 
-
-moreBtn.addEventListener("click", () => {
-    taskOptions.style.display = "flex";
-});
-
-
-// closeModalBtn.addEventListener("click", () => {
-//     taskOptions.style.display = "none";
-// });
+if (moreBtn) {
+    moreBtn.addEventListener("click", () => {
+        taskOptions.style.display = "flex";
+    });
+}
 
 closeModalBtn.forEach(closeBtn => {
-    closeBtn.addEventListener('click', () =>{
+    closeBtn.addEventListener('click', () => {
         closeBtn.closest('.modal').style.display = 'none';
     });
 });
 
-pauseTaskBtn.addEventListener("click", () => {
-    pauseCurrentTask();
-    taskOptions.style.display = "none";
-});
-
-completeTaskBtn.addEventListener("click", () => {
-    completeCurrentTask();
-    taskOptions.style.display = "none";
-});
-
-editTaskBtn.addEventListener("click", () => {
-    const activeTaskId = localStorage.getItem("activeTaskId");
-    if(activeTaskId){
-        editTask(activeTaskId);
-    }
-    taskOptions.style.display = "none";
-});
-
-viewDetailsBtn.addEventListener("click", ()=>{
-    const activeTaskId = localStorage.getItem("activeTaskId");
-    if(activeTaskId){
-        showDetailsModal(activeTaskId);
-    }
-    taskOptions.style.display = "none";
-});
-
-
-
-function updateTimerDisplay(){
-    let hrs = hours < 10 ? "0" + hours : hours;
-    let min = minutes < 10 ? "0" + minutes : minutes;
-    let sec = seconds < 10 ? "0" + seconds : seconds;
-
-    timerDisplay.textContent = `${hrs}:${min}:${sec}`;
-
+if (pauseTaskBtn) {
+    pauseTaskBtn.addEventListener("click", () => {
+        pauseCurrentTask();
+        taskOptions.style.display = "none";
+    });
 }
 
+if (completeTaskBtn) {
+    completeTaskBtn.addEventListener("click", () => {
+        completeCurrentTask();
+        taskOptions.style.display = "none";
+    });
+}
 
-function stopWatch(){
-    seconds++;
-    if(seconds === 60){
-        seconds = 0;
-        minutes++;
-        if(minutes === 60){
-            minutes = 0;
-            hours++;
+if (editTaskBtn) {
+    editTaskBtn.addEventListener("click", () => {
+        const activeTaskId = localStorage.getItem("activeTaskId");
+        if(activeTaskId){
+            editTask(activeTaskId);
         }
-    }
-    updateTimerDisplay();
+        taskOptions.style.display = "none";
+    });
 }
 
-
-function timerStart(){
-    const activeTaskId = localStorage.getItem("activeTaskId");
-
-    if(!activeTaskId){
-        alert("Please select or create a task first");
-        return;
-    }
-
-    if(timer !== null){
-        clearInterval(timer);
-    }
-
-    if(!localStorage.getItem("timerStartTime")){
-        localStorage.setItem("timerStartTime", new Date().toISOString())
-    }
-
-    timer = setInterval(stopWatch, 1000);
-
-
-    startTimerBtn.disabled = true;
-    pauseTimerBtn.disabled = false;
-    endTimerBtn.disabled = false;
-}
-
-
-function timerPause(){
-
-    clearInterval(timer);
-    timer = null;
-
-    const activeTaskId = localStorage.getItem("activeTaskId");
-    if(activeTaskId){
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const activeTask = tasks.find(t => t.id === activeTaskId);
-
-        if(activeTask){
-            saveTimerState(activeTask);
+if (viewDetailsBtn) {
+    viewDetailsBtn.addEventListener("click", () => {
+        const activeTaskId = localStorage.getItem("activeTaskId");
+        if(activeTaskId){
+            showDetailsModal(activeTaskId);
         }
-    }
-
-    localStorage.removeItem("timerStartTime");
-
-    startTimerBtn.disabled = false;
-    pauseTimerBtn.disabled = true;
-
+        taskOptions.style.display = "none";
+    });
 }
-
-
-function timerEnd() {
-    clearInterval(timer);
-    timer = null;
-    
-    localStorage.removeItem("timerStartTime");
-    seconds = 0;
-    minutes = 0;
-    hours = 0;
-    updateTimerDisplay();
-    
-   
-    startTimerBtn.disabled = false;
-    pauseTimerBtn.disabled = true;
-    endTimerBtn.disabled = true;
-}
-
-function initializeTimer() {
-    const activeTaskId = localStorage.getItem("activeTaskId");
-    
-    if (activeTaskId) {
-        const timerStartTime = localStorage.getItem("timerStartTime");
-        if (timerStartTime) {
-           
-            const startTime = new Date(timerStartTime);
-            const now = new Date();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-      
-            seconds = elapsedSeconds % 60;
-            minutes = Math.floor(elapsedSeconds / 60) % 60;
-            hours = Math.floor(elapsedSeconds / 3600);
-            
-            updateTimerDisplay();
-            timerStart();
-        }
-        
-       
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const activeTask = tasks.find(t => t.id === activeTaskId);
-        if (activeTask) {
-            setOngoingTask(activeTask);
-        }
-    } else {
-        clearOngoingTaskDisplay();
-    }
-}
-
-startTimerBtn.addEventListener("click", timerStart);
-pauseTimerBtn.addEventListener("click", timerPause);
-endTimerBtn.addEventListener("click", timerEnd);
-
 
 function addNewTaskForm(){
     const taskForm = document.createElement("div");
     taskForm.classList.add("modal");
 
-
     taskForm.innerHTML = `
-
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>New Task</h2>
-                <form id="newTaskForm" class="task-form">
-                    <div class="form-group">
-                        <label for="taskName">Task Name</label>
-                        <input type="text" id="taskName" placeholder="Enter task name" required>
-                    </div>
-
-                    <div class="form-group>
-                        <label for="priority">Priority</label>
-                        <select id="priority">
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tag">Tag</label>
-                        <input type="text" id="tag" placeholder="Enter tag" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="startDate">Start Date</label>
-                        <input type="date" id="startDate" value="${new Date().toISOString().split("T")[0]}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status">
-                            <option value="ongoing">Ongoing</option>
-                            <option value="paused">Paused</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="targetDate">Target Date to Complete</label>
-                        <input type="date" id="targetDate" required>
-                    </div>
-
-                    <div class="form-group">
-                         <label for="details">Details</label>
-                         <textarea id="details" rows="3" placeholder="Enter task details..."></textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" id="addTaskBtnModal" class="btn-primary">Add Task</button>
-                    </div>
-
-                    </form>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>New Task</h2>
+            <form id="newTaskForm" class="task-form">
+                <div class="form-group">
+                    <label for="taskName">Task Name</label>
+                    <input type="text" id="taskName" placeholder="Enter task name" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tag">Tag</label>
+                    <input type="text" id="tag" placeholder="Enter tag" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" value="${new Date().toISOString().split("T")[0]}">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="ongoing">Ongoing</option>
+                        <option value="paused">Paused</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetDate">Target Date to Complete</label>
+                    <input type="date" id="targetDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="details">Details</label>
+                    <textarea id="details" placeholder="Task details" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="addTaskBtnModal" class="btn-primary">Add Task</button>
+                    <button type="button" class="btn-secondary close-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
     `;
 
-
     document.body.appendChild(taskForm);
-    taskForm.style.display = "block";
+    taskForm.style.display = "flex";
 
-    taskForm.querySelector(".close").addEventListener("click", () => taskForm.remove());
+    taskForm.querySelector(".close").addEventListener("click", () => {
+        taskForm.remove();
+    });
+
+    taskForm.querySelector(".close-btn").addEventListener("click", () => {
+        taskForm.remove();
+    });
 
     taskForm.querySelector("#addTaskBtnModal").addEventListener("click", () => {
-        addNewTaskForm(taskForm);
-        taskForm.remove();
+        addNewTask(taskForm);
     });
 }
 
-
 function addNewTask(taskForm){
+
     const taskName = taskForm.querySelector("#taskName").value;
     const priority = taskForm.querySelector("#priority").value;
     const tag = taskForm.querySelector("#tag").value;
     const startDate = taskForm.querySelector('#startDate').value;
     const status = taskForm.querySelector("#status").value;
-    const targetTime = taskForm.querySelector("#targetDate").value;
-    const details = taskForm.querySelector("#details").value;
+    const targetDate = taskForm.querySelector("#targetDate").value;
+    const details = taskForm.querySelector("#details").value || "";
 
-    if(!taskName || !tag){
-        alert("Please fill out all required fields");
+    if(!taskName || !tag || !targetDate){
+        alert("All fields are required");
         return;
     }
 
@@ -330,19 +225,18 @@ function addNewTask(taskForm){
         priority,
         startDate,
         status,
-        targetTime,
+        targetDate,
         details,
         timeFragments: [],
         timeTaken: "00:00:00"
     };
-
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 
     const ongoingTask = tasks.find(t => t.status === "ongoing");
     if(ongoingTask && status === "ongoing"){
-        ongoingTask.status = "paused"
+        ongoingTask.status = "paused";
         saveTimerState(ongoingTask);
         localStorage.removeItem("activeTaskId");
     }
@@ -352,47 +246,29 @@ function addNewTask(taskForm){
         resetTimer();
     }
 
-    // task.status = status;
     tasks.push(task);
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
     if(status === "ongoing"){
         setOngoingTask(task);
+        timerStart();
     }
 
     updateTaskCounters();
     renderTaskLists();
+    taskForm.remove();
 }
 
-
 function saveTimerState(task){
-
-    // const timerValue = document.getElementById("timer").textContent;
-
-    // const timeFragment = {
-    //     date: new Date().toISOString().split('T')[0],
-    //     start: localStorage.getItem("timerStartTime") || new Date().toISOString(),
-    //     end: new Date().toISOString(),
-    //     duration: timerValue
-    // };
-
-
-    const startTime = new Date(localStorage.getItem("timerStartTime"));
-    const endTime = new Date();
-    const elapsedMs = endTime - startTime;
-
-    const totalSeconds = Math.floor(elapsedMs / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    const duration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    if (!task) return;
+    
+    const timerValue = document.getElementById("timer").textContent;
 
     const timeFragment = {
         date: new Date().toISOString().split('T')[0],
-        start: startTime.toISOString(),
-        end: endTime.toISOString(),
-        duration
+        start: localStorage.getItem("timerStartTime") || new Date().toISOString(),
+        end: new Date().toISOString(),
+        duration: timerValue
     };
 
     if(!task.timeFragments){
@@ -401,22 +277,19 @@ function saveTimerState(task){
 
     task.timeFragments.push(timeFragment);
 
-
     if(!task.timeTaken || task.timeTaken === "00:00:00"){
         task.timeTaken = timerValue;
-    }else{
+    } else {
         task.timeTaken = addTimes(task.timeTaken, timerValue);
     }
-
-
+    
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const index = tasks.findIndex(t => t.id === task.id);
-    if(index >= 0){
+    if (index !== -1) {
         tasks[index] = task;
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 }
-
 
 
 function addTimes(time1, time2){
@@ -427,34 +300,23 @@ function addTimes(time1, time2){
     let totalMinutes = minutes1 + minutes2 + Math.floor(totalSeconds / 60);
     totalSeconds %= 60;
 
-
     let totalHours = hours1 + hours2 + Math.floor(totalMinutes / 60);
     totalMinutes %= 60;
 
-    return `${totalHours.toString().padStart(2, '0')}:${totalMinutes.toString().padStart(2, '0')}:${totalSeconds.toString().padStart(2, '0')}`
-
+    return `${totalHours.toString().padStart(2, '0')}:${totalMinutes.toString().padStart(2, '0')}:${totalSeconds.toString().padStart(2, '0')}`;
 }
 
 
 function resetTimer(){
-
-    // if(typeof timerEnd === 'function'){
-    //     timerEnd();
-    // }else{
-    //     document.getElementById("timer").textContext = "00:00:00";
-    // }
-
     clearInterval(timer);
-    timer=null;
+    timer = null;
     seconds = 0; 
     minutes = 0;
     hours = 0;
 
-    // timerDisplay.textContent = "00:00:00";
-    updateTimerDisplay();
+    timerDisplay.textContent = "00:00:00";
 
     localStorage.setItem("timerStartTime", new Date().toISOString());
-
 }
 
 
@@ -466,16 +328,10 @@ function pauseCurrentTask(){
     const task = tasks.find(t => t.id === activeTaskId);
 
     if(task){
-
         saveTimerState(task);
 
         task.status = 'paused';
         localStorage.setItem("tasks", JSON.stringify(tasks));
-
-
-        // if(typeof timerPause === 'function'){
-        //     timerPause();
-        // }
 
         timerPause();
         localStorage.removeItem("activeTaskId");
@@ -483,9 +339,9 @@ function pauseCurrentTask(){
 
         updateTaskCounters();
         renderTaskLists();
-
     }
 }
+
 
 function completeCurrentTask(){
     const activeTaskId = localStorage.getItem("activeTaskId");
@@ -499,23 +355,17 @@ function completeCurrentTask(){
 
         task.status = "completed";
         task.endDate = new Date().toISOString().split("T")[0];
-        localStorage.setItem("task". JSON.stringify(tasks));
-
-        // if(typeof timerEnd === 'function'){
-        //     timerEnd();
-        // }
+        localStorage.setItem("tasks", JSON.stringify(tasks));
 
         timerEnd();
         localStorage.removeItem("activeTaskId");
         clearOngoingTaskDisplay();
 
-
         updateTaskCounters();
         renderTaskLists();
-
     }
-
 }
+
 
 function resumeTask(taskId){
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -527,18 +377,12 @@ function resumeTask(taskId){
     }
 
     const taskToResume = tasks.find(t => t.id === taskId);
+
     if(taskToResume){
         taskToResume.status = "ongoing";
         localStorage.setItem("activeTaskId", taskId);
 
         resetTimer();
-
-
-        // if(typeof timerStart === 'function'){
-        //     timerStart();
-        // }
-
-
         setOngoingTask(taskToResume);
         timerStart();
     }
@@ -555,18 +399,13 @@ function completeTask(taskId){
 
     if(task){
         task.status = "completed";
-        task.endDate = new Date().toISOString.split("T")[0];
-        localStorage.setItem("tasks". JSON.stringify(tasks));
-
+        task.endDate = new Date().toISOString().split("T")[0];
+        localStorage.setItem("tasks", JSON.stringify(tasks));
 
         if(localStorage.getItem("activeTaskId") === taskId){
             localStorage.removeItem("activeTaskId");
             clearOngoingTaskDisplay();
             timerEnd();
-
-            // if(typeof timerEnd === 'function'){
-            //     timerEnd();
-            // }
         }
 
         updateTaskCounters();
@@ -574,54 +413,81 @@ function completeTask(taskId){
     }
 }
 
+
 function deleteTask(taskId){
-    if(!confirm("Are you sure you want to delete this task?")) return;
+    if(!confirm("Confirm to dlete Task")) return;
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     tasks = tasks.filter(t => t.id !== taskId);
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
-
     if(localStorage.getItem("activeTaskId") === taskId){
         localStorage.removeItem("activeTaskId");
         clearOngoingTaskDisplay();
         timerEnd();
-        // if(typeof timerEnd === 'function'){
-        //     timerEnd();
-        // }
     }
 
     updateTaskCounters();
     renderTaskLists();
-
 }
 
 function clearOngoingTaskDisplay(){
+    const displayElements = [
+        "displayTaskName", "displayTag", "displayPriority", 
+        "displayStartDate", "displayStatus", "displayTargetTime"
+    ];
+    
+    displayElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = " -- ";
+        }
+    });
 
-    document.getElementById("displayTaskName").textContent = " -- ";
-    document.getElementById("displayTag").textContent = " -- ";
-    document.getElementById("displayPriority").textContent = " -- ";
-    document.getElementById("displayStartDate").textContent = " -- ";
-    document.getElementById("displayStatus").textContent = " -- ";
-    document.getElementById("displayTargetTime").textContent = " -- ";
-
-    document.getElementById("activeTaskPanel").classList.add("hidden");
-    document.getElementById("noActiveTaskPanel").classList.remove("hidden");
-
+    const activePanel = document.getElementById("activeTaskPanel");
+    const noActivePanel = document.getElementById("noActiveTaskPanel");
+    
+    if (activePanel) {
+        activePanel.classList.add("hidden");
+    }
+    
+    if (noActivePanel) {
+        noActivePanel.classList.remove("hidden");
+    }
 }
+
 
 function setOngoingTask(task){
-    document.getElementById("displayTaskName").textContent = task.name;
-    document.getElementById("displayTag").textContent = task.tag;
-    document.getElementById("displayPriority").textContent = task.priority;
-    document.getElementById("displayStartDate").textContent = task.startDate;
-    document.getElementById("displayStatus").textContent = task.status;
-    document.getElementById("displayTargetTime").textContent = task.targetDate || " -- ";
-
-    document.getElementById("activeTaskPanel").classList.remove("hidden");
-    document.getElementById("noActiveTaskPanel").classList.add("hidden");
+    if (!task) return;
     
+    const displayMap = {
+        "displayTaskName": task.name,
+        "displayTag": task.tag,
+        "displayPriority": task.priority,
+        "displayStartDate": task.startDate,
+        "displayStatus": task.status,
+        "displayTargetTime": task.targetDate
+    };
+    
+    for (const [id, value] of Object.entries(displayMap)) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    const activePanel = document.getElementById("activeTaskPanel");
+    const noActivePanel = document.getElementById("noActiveTaskPanel");
+    
+    if (activePanel) {
+        activePanel.classList.remove("hidden");
+    }
+    
+    if (noActivePanel) {
+        noActivePanel.classList.add("hidden");
+    }
 }
+
 
 function formatTimeFragment(fragments){
     if(!Array.isArray(fragments) || fragments.length === 0) return "--";
@@ -630,58 +496,24 @@ function formatTimeFragment(fragments){
     return lastThree.map(frag => `${frag.date}: ${frag.duration}`).join("<br>");
 }
 
+
 function updateTaskCounters(){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     const totalCount = tasks.length;
     const ongoingCount = tasks.filter(t => t.status === "ongoing").length;
+    const pausedCount = tasks.filter(t => t.status === "paused").length;
     const completedCount = tasks.filter(t => t.status === "completed").length;
 
-    const totalTimeInHours = tasks.reduce((total, task) => {
-        if(task.timeTaken){
-            const [ hours, minutes, seconds ] = task.timeTaken.split(':').map(Number);
-            return total + hours + (minutes / 60) + (seconds / 3600);
-        }
-        return total;
-    }, 0);
-
-    totalCountElement.textContent = totalCount;
-    ongoingCountElement.textContent = ongoingCount;
-    completedCountElement.textContent = completedCount;
-    timeTotalElement.textContent = totalTimeInHours.toFixed(1)
+    if (totalCountElement) totalCountElement.textContent = totalCount;
+    if (ongoingCountElement) ongoingCountElement.textContent = ongoingCount;
+    if (completedCountElement) completedCountElement.textContent = completedCount;
+    if (pausedCountElement) pausedCountElement.textContent = pausedCount;
 }
+
 
 function renderTaskLists(){
-    renderTaskTable();
     renderPausedTaskTable();
-}
-
-
-function renderTaskTable(){
-    const tableBody = document.getElementById('taskTableBody');
-    if(!tableBody) return;
-    
-    tableBody.innerHTML = "";
-
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    tasks.forEach((task, index) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${task.name}</td>
-            <td>${task.priority}</td>
-            <td>${task.tag}</td>
-            <td>${task.startDate}</td>
-            <td>${task.status}</td>
-            <td>${task.endDate || "--"}</td>
-            <td>${task.timeTaken || "00:00:00"}</td>
-            <td><button onclick="showDetailsModal('${task.id}')">More</button></td>
-        `;
-
-        tableBody.appendChild(row);
-    });
 }
 
 
@@ -694,22 +526,24 @@ function renderPausedTaskTable(){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const pausedTasks = tasks.filter(t => t.status === "paused");
 
-
     pausedTasks.forEach((task, index) => {
         const row = document.createElement("tr");
+        
+      
+        const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
 
-        row.innerHTML =`
+        row.innerHTML = `
             <td>${task.id.slice(-4)}</td>
             <td>${task.name}</td>
-            <td>${task.priority}</td>
-            <td>${task.tag}</td> 
-            <td>${task.status}</td>
+            <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
+            <td><span class="tag-badge">${task.tag}</span></td> 
+            <td><span class="status-badge status-${task.status}">${task.status}</span></td>
             <td>${task.startDate}</td>
             <td>${task.endDate || "--"}</td>
             <td>${task.timeTaken || "00:00:00"}</td>
+            <td>${timeFragmentsHtml}</td>
             <td>
-                <button onclick="resumeTask('${task.id}')">Resume</button>
-                <button onclick="showDetailsModal('${task.id}')">More</button>
+                <button class="action-btn more-btn" onclick="showDetailsModal('${task.id}')">More</button>
             </td>  
         `;
 
@@ -718,7 +552,7 @@ function renderPausedTaskTable(){
 }
 
 
-function renderCompletedTaskTable() {
+function renderCompletedTaskTable(){
     const completedTableBody = document.getElementById('completedTaskTableBody');
     if(!completedTableBody) return;
 
@@ -729,98 +563,122 @@ function renderCompletedTaskTable() {
 
     completedTasks.forEach((task, index) => {
         const row = document.createElement("tr");
-
+        
         row.innerHTML = `
             <td>${task.id.slice(-4)}</td>
             <td>${task.name}</td>
-            <td>${task.priority}</td>
-            <td>${task.tag}</td>
+            <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
+            <td><span class="tag-badge">${task.tag}</span></td> 
             <td>${task.startDate}</td>
             <td>${task.endDate || "--"}</td>
             <td>${task.timeTaken || "00:00:00"}</td>
-            <td><button onclick="showDetailsModal('${task.id}')">Details</button></td>
+            <td>
+                <button class="action-btn more-btn" onclick="showDetailsModal('${task.id}')">More</button>
+            </td>  
         `;
+
         completedTableBody.appendChild(row);
     });
 }
 
 
-function showDetailsModal(taskId) {
+function showDetailsModal(taskId){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const task = tasks.find(t => t.id === taskId);
 
     if(!task) return;
 
+    const taskDetailsModal = document.getElementById("taskDetailsModal");
     const detailsContainer = document.getElementById("taskDetailsContent");
 
-    let timeFragmentsHtml = '';
-    if (task.timeFragments && task.timeFragments.length > 0) {
-        timeFragmentsHtml = task.timeFragments.map(f => `
-            <div class="time-fragment">
-                <p>${f.date}: ${f.duration}</p>
+    if (!taskDetailsModal || !detailsContainer) {
+      
+        const modalElement = document.createElement("div");
+        modalElement.id = "taskDetailsModal";
+        modalElement.classList.add("modal");
+        
+        modalElement.innerHTML = `
+            <div class="modal-content" id="taskDetailsContent">
+                <span class="close">&times;</span>
+                <h2>${task.name}</h2>
+                <div class="task-details">
+                    <p><strong>Priority:</strong> <span class="priority-badge priority-${task.priority}">${task.priority}</span></p>
+                    <p><strong>Tag:</strong> <span class="tag-badge">${task.tag}</span></p>
+                    <p><strong>Status:</strong> <span class="status-badge status-${task.status}">${task.status}</span></p>
+                    <p><strong>Start Date:</strong> ${task.startDate}</p>
+                    <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
+                    <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
+                    <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
+                    <p><strong>Description:</strong> ${task.details || "No description"}</p>
+
+                    <h3>Time Details</h3>
+                    <div class="time-fragments">
+                        ${(task.timeFragments || []).map(f => `
+                            <div class="time-fragment">
+                                <p>${f.date}: ${f.duration}</p>
+                            </div>
+                        `).join("")}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        ${task.status === "paused" ? `<button class="btn-primary" onclick="resumeTask('${task.id}')">Resume Task</button>` : ''}
+                        <button class="btn-secondary" onclick="editTask('${task.id}')">Edit Task</button>
+                        ${task.status !== "completed" ? `<button class="btn-success" onclick="completeTask('${task.id}')">Complete Task</button>` : ''}
+                        <button class="btn-danger" onclick="deleteTask('${task.id}')">Delete Task</button>
+                    </div>
+                </div>
             </div>
-        `).join("");
+        `;
+        
+        document.body.appendChild(modalElement);
+        
+        
+        modalElement.querySelector(".close").addEventListener("click", () => {
+            modalElement.style.display = "none";
+        });
+        
+        modalElement.style.display = "flex";
     } else {
-        timeFragmentsHtml = '<p>No time records available</p>';
-    }
+        // Update existing modal
+        detailsContainer.innerHTML = `
+            <span class="close">&times;</span>
+            <h2>${task.name}</h2>
+            <div class="task-details">
+                <p><strong>Priority:</strong> <span class="priority-badge priority-${task.priority}">${task.priority}</span></p>
+                <p><strong>Tag:</strong> <span class="tag-badge">${task.tag}</span></p>
+                <p><strong>Status:</strong> <span class="status-badge status-${task.status}">${task.status}</span></p>
+                <p><strong>Start Date:</strong> ${task.startDate}</p>
+                <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
+                <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
+                <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
+                <p><strong>Description:</strong> ${task.details || "No description"}</p>
 
-    let actionsHtml = '';
-    if (task.status === 'paused') {
-        actionsHtml = `
-            <div class="modal-actions">
-                <button onclick="resumeTask('${task.id}')">Resume Task</button>
-                <button onclick="editTask('${task.id}')">Edit Task</button>
-                <button onclick="completeTask('${task.id}')">Complete Task</button>
-                <button onclick="deleteTask('${task.id}')">Delete Task</button>
+                <h3>Time Details</h3>
+                <div class="time-fragments">
+                    ${(task.timeFragments || []).map(f => `
+                        <div class="time-fragment">
+                            <p>${f.date}: ${f.duration}</p>
+                        </div>
+                    `).join("")}
+                </div>
+                
+                <div class="action-buttons">
+                    ${task.status === "paused" ? `<button class="btn-primary" onclick="resumeTask('${task.id}')">Resume Task</button>` : ''}
+                    <button class="btn-secondary" onclick="editTask('${task.id}')">Edit Task</button>
+                    ${task.status !== "completed" ? `<button class="btn-success" onclick="completeTask('${task.id}')">Complete Task</button>` : ''}
+                    <button class="btn-danger" onclick="deleteTask('${task.id}')">Delete Task</button>
+                </div>
             </div>
         `;
-    } else if (task.status === 'completed') {
-        actionsHtml = `
-            <div class="modal-actions">
-                <button onclick="deleteTask('${task.id}')">Delete Record</button>
-            </div>
-        `;
-    } else {
-        actionsHtml = `
-            <div class="modal-actions">
-                <button onclick="editTask('${task.id}')">Edit Task</button>
-                <button onclick="deleteTask('${task.id}')">Delete Task</button>
-            </div>
-        `;
-    }
-
-    detailsContainer.innerHTML = `
-        <span class="close">&times;</span>
-        <h2>${task.name}</h2>
-        <p><strong>Priority:</strong> ${task.priority}</p>
-        <p><strong>Tag:</strong> ${task.tag}</p>
-        <p><strong>Status:</strong> ${task.status}</p>
-        <p><strong>Start Date:</strong> ${task.startDate}</p>
-        <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
-        <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
-        <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
-        <p><strong>Description:</strong> ${task.details || "No description provided"}</p>
-
-        <h3>Time Details</h3>
-        <div class="time-fragments">
-            ${timeFragmentsHtml}
-        </div>
-
-        ${actionsHtml}
-    `;
-
-   
-    detailsContainer.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
+        
+     
+        taskDetailsModal.querySelector(".close").addEventListener("click", () => {
             taskDetailsModal.style.display = "none";
         });
-    });
-
-
-
-    taskDetailsModal.style.display = "block";
+        
+        taskDetailsModal.style.display = "flex";
+    }
 }
-
 
 
 function editTask(taskId) {
@@ -833,11 +691,11 @@ function editTask(taskId) {
     editForm.classList.add("modal");
     
     editForm.innerHTML = `
-        <div class="modal-content">
-            <span class="close">&times;</span>
+        <div class="modal-content"> 
+            <span class="close">&times;</span> 
             <h2>Edit Task</h2>
             
-            <form id="editTaskForm" class="task-form">
+            <form id="editTaskForm" class="task-form"> 
                 <div class="form-group">
                     <label for="editTaskName">Task Name</label>
                     <input type="text" id="editTaskName" value="${task.name}" placeholder="Task Name" required>
@@ -868,7 +726,7 @@ function editTask(taskId) {
             
                 <div class="form-group">
                     <label for="editTargetDate">Target Completion Date</label>
-                    <input type="date" id="editTargetDate" value="${task.targetDate || ''}" required>
+                    <input type="date" id="editTargetDate" value="${task.targetDate}" required>
                 </div>
                 
                 <div class="form-group">
@@ -878,15 +736,22 @@ function editTask(taskId) {
                 
                 <div class="form-actions">
                     <button type="button" id="saveTaskBtn" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary close-btn">Cancel</button>
                 </div>
             </form>
         </div>
     `;
     
     document.body.appendChild(editForm);
-    editForm.style.display = "block";
+    editForm.style.display = "flex";
 
-    editForm.querySelector(".close").addEventListener("click", () => editForm.remove());
+    editForm.querySelector(".close").addEventListener("click", () => {
+        editForm.remove();
+    });
+    
+    editForm.querySelector(".close-btn").addEventListener("click", () => {
+        editForm.remove();
+    });
 
     editForm.querySelector("#saveTaskBtn").addEventListener("click", () => {
         updateTaskData(taskId, editForm);
@@ -905,7 +770,6 @@ function updateTaskData(taskId, editForm){
     const newStatus = editForm.querySelector("#editStatus").value;
     const oldStatus = task.status;
 
-    
     task.name = editForm.querySelector("#editTaskName").value;
     task.priority = editForm.querySelector("#editPriority").value;
     task.tag = editForm.querySelector("#editTag").value;
@@ -922,11 +786,11 @@ function updateTaskData(taskId, editForm){
             timerPause();
         }
 
-        if(newStatus == "ongoing"){
+        if(newStatus === "ongoing"){
             const previousOngoing = tasks.find(t => t.id !== taskId && t.status === "ongoing");
             if(previousOngoing){
                 saveTimerState(previousOngoing);
-                previousOngoing.status ="paused";
+                previousOngoing.status = "paused";
             }
 
             localStorage.setItem("activeTaskId", taskId);
@@ -934,7 +798,7 @@ function updateTaskData(taskId, editForm){
             resetTimer();
             timerStart();
 
-        }else if(newStatus === "completed" && !task.endDate){
+        } else if(newStatus === "completed" && !task.endDate){
             task.endDate = new Date().toISOString().split("T")[0];
         }
     }
@@ -945,24 +809,52 @@ function updateTaskData(taskId, editForm){
 }
 
 
-startTimerBtn.addEventListener("click", timerStart);
-pauseTimerBtn.addEventListener("click", timerPause);
-endTimerBtn.addEventListener("click", timerEnd);
-
-function renderAnalytics(){
-    renderTagDistributionChart();
-    renderPriorityDistributionChart();
-}
-
-
-// Analytics functionality (continued from previous code)
-function renderTagDistributionChart() {
-    const tagChartCanvas = document.getElementById('tagChart');
-    if (!tagChartCanvas) return;
+function renderAnalytics() {
+    const analyticsContainer = document.getElementById('analytics-container');
+    if (!analyticsContainer) return;
     
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     
-    // Count tasks by tag
+    // Clear previous charts
+    analyticsContainer.innerHTML = `
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Task Status</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Task Priorities</h3>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Tasks by Tag</h3>
+                <canvas id="tagChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Time Spent</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+    `;
+    
+    // Status chart data
+    const statusCounts = {
+        ongoing: tasks.filter(t => t.status === 'ongoing').length,
+        paused: tasks.filter(t => t.status === 'paused').length,
+        completed: tasks.filter(t => t.status === 'completed').length
+    };
+    
+    // Priority chart data
+    const priorityCounts = {
+        high: tasks.filter(t => t.priority === 'high').length,
+        medium: tasks.filter(t => t.priority === 'medium').length,
+        low: tasks.filter(t => t.priority === 'low').length
+    };
+    
+    // Tag chart data
+    // Tag chart data
     const tagCounts = {};
     tasks.forEach(task => {
         if (task.tag) {
@@ -970,49 +862,308 @@ function renderTagDistributionChart() {
         }
     });
     
-    // Convert to arrays for chart
-    const tags = Object.keys(tagCounts);
-    const counts = Object.values(tagCounts);
+    // Time chart data - calculate time spent on each tag
+    const tagTimeSpent = {};
+    tasks.forEach(task => {
+        if (task.tag && task.timeTaken) {
+            // Convert time string to seconds for calculation
+            const [hours, minutes, seconds] = task.timeTaken.split(':').map(Number);
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            
+            tagTimeSpent[task.tag] = (tagTimeSpent[task.tag] || 0) + totalSeconds;
+        }
+    });
     
-    // Set up chart context
-    const ctx = tagChartCanvas.getContext('2d');
+    // Convert seconds back to hours for display
+    Object.keys(tagTimeSpent).forEach(tag => {
+        const hours = Math.floor(tagTimeSpent[tag] / 3600);
+        tagTimeSpent[tag] = parseFloat((tagTimeSpent[tag] / 3600).toFixed(2)); // Convert to hours with 2 decimal places
+    });
     
-    // Clear previous chart if any
-    if (window.tagChart) {
-        window.tagChart.destroy();
-    }
-    
-    // Create chart
-    window.tagChart = new Chart(ctx, {
+    // Create Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
         type: 'pie',
         data: {
-            labels: tags,
+            labels: Object.keys(statusCounts),
             datasets: [{
-                label: 'Tasks by Tag',
-                data: counts,
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                ]
+                data: Object.values(statusCounts),
+                backgroundColor: ['#4CAF50', '#FFC107', '#2196F3'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+    // Create Priority Chart
+    const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+    new Chart(priorityCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(priorityCounts),
+            datasets: [{
+                data: Object.values(priorityCounts),
+                backgroundColor: ['#F44336', '#FF9800', '#8BC34A'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+    // Create Tag Chart
+    const tagCtx = document.getElementById('tagChart').getContext('2d');
+    new Chart(tagCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(tagCounts),
+            datasets: [{
+                label: 'Number of Tasks',
+                data: Object.values(tagCounts),
+                backgroundColor: '#3F51B5',
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Task Distribution by Tag'
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+    
+    // Create Time Chart
+    const timeCtx = document.getElementById('timeChart').getContext('2d');
+    new Chart(timeCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(tagTimeSpent),
+            datasets: [{
+                label: 'Hours Spent',
+                data: Object.values(tagTimeSpent),
+                backgroundColor: '#009688',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
             }
         }
     });
 }
 
-function renderPriorityDistributionChart() {
-    const priorityChartCanvas = document.getElementById('priorityChart');
-    if (!priorityChartCanvas) return;
+// Timer functions
+function timerStart() {
+    if (timer) return;
     
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    timer = setInterval(updateTimer, 1000);
+    startTimerBtn.disabled = true;
+    pauseTimerBtn.disabled = false;
+    endTimerBtn.disabled = false;
+}
+
+function timerPause() {
+    clearInterval(timer);
+    timer = null;
     
-    // Count tasks by priority
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+    endTimerBtn.disabled = false;
+}
+
+function timerEnd() {
+    clearInterval(timer);
+    timer = null;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    timerDisplay.textContent = "00:00:00";
+    
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+    endTimerBtn.disabled = true;
+}
+
+function updateTimer() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    timerDisplay.textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Event listeners for timer buttons
+if (startTimerBtn) {
+    startTimerBtn.addEventListener('click', () => {
+        const activeTaskId = localStorage.getItem("activeTaskId");
+        if (activeTaskId) {
+            timerStart();
+        } else {
+            alert("No active task to start timer for!");
+        }
+    });
+}
+
+if (pauseTimerBtn) {
+    pauseTimerBtn.addEventListener('click', () => {
+        pauseCurrentTask();
+    });
+}
+
+if (endTimerBtn) {
+    endTimerBtn.addEventListener('click', () => {
+        completeCurrentTask();
+    });
+}
+
+function initApp() {
+   
+    const activeTaskId = localStorage.getItem("activeTaskId");
+    if (activeTaskId) {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const activeTask = tasks.find(t => t.id === activeTaskId);
+        
+        if (activeTask) {
+            setOngoingTask(activeTask);
+            timerStart();
+        } else {
+            localStorage.removeItem("activeTaskId");
+            clearOngoingTaskDisplay();
+        }
+    } else {
+        clearOngoingTaskDisplay();
+    }
+    
+    updateTaskCounters();
+    renderTaskLists();
+    
+
+    window.onclick = function(event) {
+        const modals = document.getElementsByClassName('modal');
+        for (let i = 0; i < modals.length; i++) {
+            if (event.target === modals[i]) {
+                modals[i].style.display = "none";
+            }
+        }
+    };
+    
+    window.showDetailsModal = showDetailsModal;
+    window.resumeTask = resumeTask;
+    window.editTask = editTask;
+    window.completeTask = completeTask;
+    window.deleteTask = deleteTask;
+}
+
+function initializeAnalytics() {
+    const analyticsContainer = document.querySelector('.analytics-container');
+    
+    // Create a better structured layout for analytics    // Make functions available globally
+
+    analyticsContainer.innerHTML = `
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Task Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Tasks by Priority</h3>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Tasks by Tag</h3>
+                <canvas id="tagChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Time Spent (Hours)</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+    `;
+    // Get all tasks from localStorage
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    
+    // Initialize charts
+    createStatusChart(tasks);
+    createPriorityChart(tasks);
+    createTagChart(tasks);
+    createTimeChart(tasks);
+}
+
+function createStatusChart(tasks) {
+    const statusCounts = {
+        'ongoing': 0,
+        'paused': 0,
+        'completed': 0
+    };
+    
+    tasks.forEach(task => {
+        statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
+    });
+    
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ongoing', 'Paused', 'Completed'],
+            datasets: [{
+                data: [statusCounts.ongoing, statusCounts.paused, statusCounts.completed],
+                backgroundColor: [
+                    'rgba(58, 110, 165, 0.7)',
+                    'rgba(255, 159, 28, 0.7)',
+                    'rgba(40, 167, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(58, 110, 165)',
+                    'rgb(255, 159, 28)',
+                    'rgb(40, 167, 69)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createPriorityChart(tasks) {
     const priorityCounts = {
         'high': 0,
         'medium': 0,
@@ -1020,436 +1171,203 @@ function renderPriorityDistributionChart() {
     };
     
     tasks.forEach(task => {
-        if (task.priority && priorityCounts.hasOwnProperty(task.priority)) {
-            priorityCounts[task.priority]++;
-        }
+        priorityCounts[task.priority] = (priorityCounts[task.priority] || 0) + 1;
     });
     
-    // Set up chart context
-    const ctx = priorityChartCanvas.getContext('2d');
-    
-    // Clear previous chart if any
-    if (window.priorityChart) {
-        window.priorityChart.destroy();
-    }
-    
-    // Create chart
-    window.priorityChart = new Chart(ctx, {
+    const ctx = document.getElementById('priorityChart').getContext('2d');
+    new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['High', 'Medium', 'Low'],
             datasets: [{
-                label: 'Tasks by Priority',
+                label: 'Number of Tasks',
                 data: [priorityCounts.high, priorityCounts.medium, priorityCounts.low],
                 backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56'
-                ]
+                    'rgba(220, 53, 69, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(40, 167, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(220, 53, 69)',
+                    'rgb(255, 193, 7)',
+                    'rgb(40, 167, 69)'
+                ],
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Task Distribution by Priority'
-            },
             scales: {
-                yAxes: [{
+                y: {
+                    beginAtZero: true,
                     ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
+                        precision: 0
                     }
-                }]
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
             }
         }
     });
 }
 
-// Search and filter functionality
-function setupSearch() {
-    const searchInputDashboard = document.getElementById('searchTasksDashboard');
-    const searchInputCompleted = document.getElementById('searchTasksCompleted');
+function createTagChart(tasks) {
+    // Extract all unique tags
+    const tagCounts = {};
     
-    if (searchInputDashboard) {
-        searchInputDashboard.addEventListener('input', () => {
-            filterTasks('dashboard', searchInputDashboard.value);
-        });
-    }
-    
-    if (searchInputCompleted) {
-        searchInputCompleted.addEventListener('input', () => {
-            filterTasks('completed', searchInputCompleted.value);
-        });
-    }
-    
-    // Set up filter buttons
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const filterType = btn.getAttribute('data-filter');
-            const page = btn.closest('.page').id.replace('-page', '');
-            
-            // Remove active class from all buttons in the same group
-            btn.parentElement.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            
-            // Add active class to clicked button
-            btn.classList.add('active');
-            
-            // Apply filter
-            applyFilter(page, filterType);
-        });
-    });
-    
-    // Set up date range filters
-    const dateFromInput = document.getElementById('filterDateFrom');
-    const dateToInput = document.getElementById('filterDateTo');
-    
-    if (dateFromInput && dateToInput) {
-        dateFromInput.addEventListener('change', () => {
-            applyDateFilter();
-        });
-        
-        dateToInput.addEventListener('change', () => {
-            applyDateFilter();
-        });
-    }
-}
-
-function filterTasks(page, searchText) {
-    const searchLower = searchText.toLowerCase();
-    
-    if (page === 'dashboard') {
-        const rows = document.querySelectorAll('#taskTableBody tr, #pausedTaskTableBody tr');
-        
-        rows.forEach(row => {
-            const taskName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-            const taskTag = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-            const taskPriority = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            
-            if (taskName.includes(searchLower) || taskTag.includes(searchLower) || taskPriority.includes(searchLower)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    } else if (page === 'completed') {
-        const rows = document.querySelectorAll('#completedTaskTableBody tr');
-        
-        rows.forEach(row => {
-            const taskName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-            const taskTag = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-            const taskPriority = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            
-            if (taskName.includes(searchLower) || taskTag.includes(searchLower) || taskPriority.includes(searchLower)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-}
-
-function applyFilter(page, filterType) {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    
-    if (page === 'dashboard') {
-        // Re-render task tables with filter
-        if (filterType === 'all') {
-            renderTaskLists();
-        } else if (filterType === 'high' || filterType === 'medium' || filterType === 'low') {
-            // Filter by priority
-            renderFilteredTaskLists(task => task.priority === filterType);
-        } else if (filterType === 'today') {
-            // Filter by today's date
-            const today = new Date().toISOString().split('T')[0];
-            renderFilteredTaskLists(task => task.startDate === today);
-        }
-    } else if (page === 'works-done') {
-        // Re-render completed task table with filter
-        if (filterType === 'all') {
-            renderCompletedTaskTable();
-        } else if (filterType === 'high' || filterType === 'medium' || filterType === 'low') {
-            // Filter by priority
-            renderFilteredCompletedTasks(task => task.priority === filterType);
-        } else if (filterType === 'last7days') {
-            // Filter by last 7 days
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const dateString = sevenDaysAgo.toISOString().split('T')[0];
-            
-            renderFilteredCompletedTasks(task => task.endDate >= dateString);
-        }
-    }
-}
-
-function applyDateFilter() {
-    const dateFrom = document.getElementById('filterDateFrom').value;
-    const dateTo = document.getElementById('filterDateTo').value;
-    
-    if (!dateFrom && !dateTo) {
-        // Reset to show all tasks
-        renderCompletedTaskTable();
-        return;
-    }
-    
-    renderFilteredCompletedTasks(task => {
-        if (dateFrom && task.endDate < dateFrom) return false;
-        if (dateTo && task.endDate > dateTo) return false;
-        return true;
-    });
-}
-
-function renderFilteredTaskLists(filterFn) {
-    // Filter and render ongoing tasks
-    const taskTableBody = document.getElementById('taskTableBody');
-    if (taskTableBody) {
-        taskTableBody.innerHTML = "";
-        
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const filteredTasks = tasks.filter(filterFn);
-        
-        filteredTasks.forEach((task, index) => {
-            if (task.status === 'ongoing') {
-                const row = document.createElement("tr");
-                
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${task.name}</td>
-                    <td>${task.priority}</td>
-                    <td>${task.tag}</td>
-                    <td>${task.startDate}</td>
-                    <td>${task.status}</td>
-                    <td>${task.endDate || "--"}</td>
-                    <td>${task.timeTaken || "00:00:00"}</td>
-                    <td><button onclick="showDetailsModal('${task.id}')">More</button></td>
-                `;
-                
-                taskTableBody.appendChild(row);
-            }
-        });
-    }
-    
-    // Filter and render paused tasks
-    const pausedTableBody = document.getElementById('pausedTaskTableBody');
-    if (pausedTableBody) {
-        pausedTableBody.innerHTML = "";
-        
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const filteredTasks = tasks.filter(t => t.status === "paused" && filterFn(t));
-        
-        filteredTasks.forEach((task, index) => {
-            const row = document.createElement("tr");
-            
-            // Format the last 3 time fragments
-            const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
-            
-            row.innerHTML = `
-                <td>${task.id.slice(-4)}</td>
-                <td>${task.name}</td>
-                <td>${task.priority}</td>
-                <td>${task.tag}</td>
-                <td>${task.status}</td>
-                <td>${task.startDate}</td>
-                <td>${task.endDate || "--"}</td>
-                <td>${task.timeTaken || "00:00:00"}</td>
-                <td>${timeFragmentsHtml}</td>
-                <td>
-                    <button onclick="resumeTask('${task.id}')">Resume</button>
-                    <button onclick="showDetailsModal('${task.id}')">More</button>
-                </td>
-            `;
-            
-            pausedTableBody.appendChild(row);
-        });
-    }
-}
-
-function renderFilteredCompletedTasks(filterFn) {
-    const completedTableBody = document.getElementById('completedTaskTableBody');
-    if (!completedTableBody) return;
-    
-    completedTableBody.innerHTML = "";
-    
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const filteredTasks = tasks.filter(t => t.status === "completed" && filterFn(t));
-    
-    filteredTasks.forEach((task, index) => {
-        const row = document.createElement("tr");
-        
-        row.innerHTML = `
-            <td>${task.id.slice(-4)}</td>
-            <td>${task.name}</td>
-            <td>${task.priority}</td>
-            <td>${task.tag}</td>
-            <td>${task.startDate}</td>
-            <td>${task.endDate || "--"}</td>
-            <td>${task.timeTaken || "00:00:00"}</td>
-            <td><button onclick="showDetailsModal('${task.id}')">Details</button></td>
-        `;
-        
-        completedTableBody.appendChild(row);
-    });
-}
-
-// Task export functionality for completed tasks
-function setupExportButtons() {
-    const exportCsvBtn = document.getElementById('exportCsv');
-    const exportJsonBtn = document.getElementById('exportJson');
-    
-    if (exportCsvBtn) {
-        exportCsvBtn.addEventListener('click', () => {
-            exportCompletedTasks('csv');
-        });
-    }
-    
-    if (exportJsonBtn) {
-        exportJsonBtn.addEventListener('click', () => {
-            exportCompletedTasks('json');
-        });
-    }
-}
-
-// Task reports and summary
-function generateTaskSummary() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const summaryElement = document.getElementById('taskSummary');
-    
-    if (!summaryElement) return;
-    
-    // Count tasks by status
-    const statusCounts = {
-        ongoing: tasks.filter(t => t.status === "ongoing").length,
-        paused: tasks.filter(t => t.status === "paused").length,
-        completed: tasks.filter(t => t.status === "completed").length
-    };
-    
-    // Calculate total time spent
-    const totalSeconds = tasks.reduce((total, task) => {
-        if (task.timeTaken) {
-            const [hours, minutes, seconds] = task.timeTaken.split(':').map(Number);
-            return total + (hours * 3600) + (minutes * 60) + seconds;
-        }
-        return total;
-    }, 0);
-    
-    const totalHours = Math.floor(totalSeconds / 3600);
-    const avgCompletionTime = statusCounts.completed > 0 ? (totalSeconds / statusCounts.completed / 3600).toFixed(2) : 0;
-    
-    // Generate summary HTML
-    summaryElement.innerHTML = `
-        <div class="summary-card">
-            <h3>Task Summary</h3>
-            <p><strong>Total Tasks:</strong> ${tasks.length}</p>
-            <p><strong>Ongoing:</strong> ${statusCounts.ongoing}</p>
-            <p><strong>Paused:</strong> ${statusCounts.paused}</p>
-            <p><strong>Completed:</strong> ${statusCounts.completed}</p>
-            <p><strong>Total Hours Spent:</strong> ${totalHours.toFixed(1)}</p>
-            <p><strong>Average Completion Time:</strong> ${avgCompletionTime} hours</p>
-        </div>
-    `;
-}
-
-// Task statistics by day of week
-function renderDailyActivityChart() {
-    const activityChartCanvas = document.getElementById('activityChart');
-    if (!activityChartCanvas) return;
-    
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    
-    // Initialize days of week counters
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const daysOfWeek = [0, 0, 0, 0, 0, 0, 0];
-    
-    // Count task creation by day of week
     tasks.forEach(task => {
-        if (task.startDate) {
-            const date = new Date(task.startDate);
-            const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
-            daysOfWeek[dayOfWeek]++;
+        if (task.tags && task.tags.length) {
+            task.tags.forEach(tag => {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            });
         }
     });
     
-    // Set up chart context
-    const ctx = activityChartCanvas.getContext('2d');
+    // Sort tags by count
+    const sortedTags = Object.entries(tagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5); // Show top 5 tags
     
-    // Clear previous chart if any
-    if (window.activityChart) {
-        window.activityChart.destroy();
+    const labels = sortedTags.map(item => item[0]);
+    const data = sortedTags.map(item => item[1]);
+    
+    // Generate colors
+    const backgroundColors = labels.map((_, i) => 
+        `hsla(${(i * 50) % 360}, 70%, 60%, 0.7)`
+    );
+    const borderColors = labels.map((_, i) => 
+        `hsla(${(i * 50) % 360}, 70%, 50%, 1)`
+    );
+    
+    const ctx = document.getElementById('tagChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} tasks`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createTimeChart(tasks) {
+
+    const dates = [];
+    const timeSpent = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        dates.push(dateStr.substring(5)); 
+        
+        const dayTotal = tasks.reduce((total, task) => {
+            const taskDate = task.timeSpent && task.timeSpent[dateStr];
+            return total + (taskDate || 0);
+        }, 0);
+        
+        timeSpent.push(dayTotal / 60); 
     }
     
-    // Create chart
-    window.activityChart = new Chart(ctx, {
+    const ctx = document.getElementById('timeChart').getContext('2d');
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: dayNames,
+            labels: dates,
             datasets: [{
-                label: 'Tasks Created',
-                data: daysOfWeek,
-                borderColor: '#4BC0C0',
+                label: 'Hours',
+                data: timeSpent,
+                fill: true,
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointRadius: 4
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Task Creation by Day of Week'
-            },
             scales: {
-                yAxes: [{
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Hours'
+                    },
                     ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
+                        callback: function(value) {
+                            return value.toFixed(1);
+                        }
                     }
-                }]
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date (MM-DD)'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Time spent: ${context.raw.toFixed(2)} hours`;
+                        }
+                    }
+                }
             }
         }
     });
 }
 
-// Initialize application
-function initializeApp() {
-    // Initialize timer state
-    initializeTimer();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const analyticsTab = document.querySelector('a[href="#analytics"]');
+    if (analyticsTab) {
+        analyticsTab.addEventListener('click', () => {
+          
+            setTimeout(initializeAnalytics, 100); 
+        });
+    }
     
-    // Initial render of task lists
-    renderTaskLists();
+  
+    if (window.location.hash === '#analytics') {
+        setTimeout(initializeAnalytics, 100);
+    }
     
-    // Update task counters
-    updateTaskCounters();
-    
-    // Initialize search functionality
-    setupSearch();
-    
-    
-    // Generate task summary
-    generateTaskSummary();
-    
-    // Initial render of default page
-    navLinks[0].click();
-    
-    // Set up global event handlers for modals
-    window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = "none";
-        }
-        
-        if (event.target.id === 'taskOptions') {
-            taskOptions.style.display = "none";
+  
+    window.addEventListener('resize', () => {
+        if (window.location.hash === '#analytics') {
+            setTimeout(initializeAnalytics, 200);
         }
     });
-}
+});
 
-// Global function definitions for HTML access
-window.showDetailsModal = showDetailsModal;
-window.resumeTask = resumeTask;
-window.completeTask = completeTask;
-window.editTask = editTask;
-window.deleteTask = deleteTask;
 
-// Start the application when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initializeApp);
+document.addEventListener('DOMContentLoaded', initApp);
