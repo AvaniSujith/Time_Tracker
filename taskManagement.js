@@ -774,3 +774,596 @@ document.addEventListener('DOMContentLoaded', function() {  //runs the funciton 
         return date.toLocaleDateString('en-US', options);
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function renderAnalytics() {
+    const analyticsContainer = document.getElementById('analytics-container');
+    if (!analyticsContainer) return;
+    
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    // Clear previous charts
+    analyticsContainer.innerHTML = `
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Task Status</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Task Priorities</h3>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Tasks by Tag</h3>
+                <canvas id="tagChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Time Spent</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+    `;
+    
+    
+    const statusChart = {
+        ongoing: tasks.filter(t => t.status === 'ongoing').length,
+        paused: tasks.filter(t => t.status === 'paused').length,
+        completed: tasks.filter(t => t.status === 'completed').length
+    };
+    
+    // Priority chart data
+    const priorityCounts = {
+        high: tasks.filter(t => t.priority === 'high').length,
+        medium: tasks.filter(t => t.priority === 'medium').length,
+        low: tasks.filter(t => t.priority === 'low').length
+    };
+    
+    // Tag chart data
+    // Tag chart data
+    const tagCounts = {};
+    tasks.forEach(task => {
+        if (task.tag) {
+            tagCounts[task.tag] = (tagCounts[task.tag] || 0) + 1;
+        }
+    });
+    
+    // Time chart data - calculate time spent on each tag
+    const tagTimeSpent = {};
+    tasks.forEach(task => {
+        if (task.tag && task.timeTaken) {
+            // Convert time string to seconds for calculation
+            const [hours, minutes, seconds] = task.timeTaken.split(':').map(Number);
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            
+            tagTimeSpent[task.tag] = (tagTimeSpent[task.tag] || 0) + totalSeconds;
+        }
+    });
+    
+    // Convert seconds back to hours for display
+    Object.keys(tagTimeSpent).forEach(tag => {
+        const hours = Math.floor(tagTimeSpent[tag] / 3600);
+        tagTimeSpent[tag] = parseFloat((tagTimeSpent[tag] / 3600).toFixed(2)); // Convert to hours with 2 decimal places
+    });
+    
+    // Create Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(statusChart),
+            datasets: [{
+                data: Object.values(statusChart),
+                backgroundColor: ['#4CAF50', '#FFC107', '#2196F3'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+    // Create Priority Chart
+    const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+    new Chart(priorityCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(priorityCounts),
+            datasets: [{
+                data: Object.values(priorityCounts),
+                backgroundColor: ['#F44336', '#FF9800', '#8BC34A'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+    // Create Tag Chart
+    const tagCtx = document.getElementById('tagChart').getContext('2d');
+    new Chart(tagCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(tagCounts),
+            datasets: [{
+                label: 'Number of Tasks',
+                data: Object.values(tagCounts),
+                backgroundColor: '#3F51B5',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+    
+    // Create Time Chart
+    const timeCtx = document.getElementById('timeChart').getContext('2d');
+    new Chart(timeCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(tagTimeSpent),
+            datasets: [{
+                label: 'Hours Spent',
+                data: Object.values(tagTimeSpent),
+                backgroundColor: '#009688',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Timer functions
+function timerStart() {
+    if (timer) return;
+    
+    timer = setInterval(updateTimer, 1000);
+    startTimerBtn.disabled = true;
+    pauseTimerBtn.disabled = false;
+    endTimerBtn.disabled = false;
+}
+
+function timerPause() {
+    clearInterval(timer);
+    timer = null;
+    
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+    endTimerBtn.disabled = false;
+}
+
+function timerEnd() {
+    clearInterval(timer);
+    timer = null;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    timerDisplay.textContent = "00:00:00";
+    
+    startTimerBtn.disabled = false;
+    pauseTimerBtn.disabled = true;
+    endTimerBtn.disabled = true;
+}
+
+function updateTimer() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    timerDisplay.textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Event listeners for timer buttons
+if (startTimerBtn) {
+    startTimerBtn.addEventListener('click', () => {
+        const activeTaskId = localStorage.getItem("activeTaskId");
+        if (activeTaskId) {
+            timerStart();
+        } else {
+            alert("No active task to start timer for!");
+        }
+    });
+}
+
+if (pauseTimerBtn) {
+    pauseTimerBtn.addEventListener('click', () => {
+        pauseCurrentTask();
+    });
+}
+
+if (endTimerBtn) {
+    endTimerBtn.addEventListener('click', () => {
+        completeCurrentTask();
+    });
+}
+
+function initApp() {
+   
+    const activeTaskId = localStorage.getItem("activeTaskId");
+    if (activeTaskId) {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const activeTask = tasks.find(t => t.id === activeTaskId);
+        
+        if (activeTask) {
+            setOngoingTask(activeTask);
+            timerStart();
+        } else {
+            localStorage.removeItem("activeTaskId");
+            clearOngoingTaskDisplay();
+        }
+    } else {
+        clearOngoingTaskDisplay();
+    }
+    
+    updateTaskCounters();
+    renderPausedTaskTable();
+    
+
+    window.onclick = function(event) {
+        const modals = document.getElementsByClassName('modal');
+        for (let i = 0; i < modals.length; i++) {
+            if (event.target === modals[i]) {
+                modals[i].style.display = "none";
+            }
+        }
+    };
+    
+    window.showDetailsModal = showDetailsModal;
+    window.resumeTask = resumeTask;
+    window.editTask = editTask;
+    window.completeTask = completeTask;
+    window.deleteTask = deleteTask;
+}
+
+function initializeAnalytics() {
+    const analyticsContainer = document.querySelector('.analytics-container');
+    
+    // Create a better structured layout for analytics    // Make functions available globally
+
+    analyticsContainer.innerHTML = `
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Task Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Tasks by Priority</h3>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+        <div class="analytics-row">
+            <div class="analytics-card">
+                <h3>Tasks by Tag</h3>
+                <canvas id="tagChart"></canvas>
+            </div>
+            <div class="analytics-card">
+                <h3>Time Spent (Hours)</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+    `;
+    // Get all tasks from localStorage
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    
+    // Initialize charts
+    createStatusChart(tasks);
+    createPriorityChart(tasks);
+    createTagChart(tasks);
+    createTimeChart(tasks);
+}
+
+function createStatusChart(tasks) {
+    const statusChart = {
+        'ongoing': 0,
+        'paused': 0,
+        'completed': 0
+    };
+    
+    tasks.forEach(task => {
+        statusChart[task.status] = (statusChart[task.status] || 0) + 1;
+    });
+    
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ongoing', 'Paused', 'Completed'],
+            datasets: [{
+                data: [statusChart.ongoing, statusChart.paused, statusChart.completed],
+                backgroundColor: [
+                    'rgba(58, 110, 165, 0.7)',
+                    'rgba(255, 159, 28, 0.7)',
+                    'rgba(40, 167, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(58, 110, 165)',
+                    'rgb(255, 159, 28)',
+                    'rgb(40, 167, 69)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createPriorityChart(tasks) {
+    const priorityCounts = {
+        'high': 0,
+        'medium': 0,
+        'low': 0
+    };
+    
+    tasks.forEach(task => {
+        priorityCounts[task.priority] = (priorityCounts[task.priority] || 0) + 1;
+    });
+    
+    const ctx = document.getElementById('priorityChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['High', 'Medium', 'Low'],
+            datasets: [{
+                label: 'Number of Tasks',
+                data: [priorityCounts.high, priorityCounts.medium, priorityCounts.low],
+                backgroundColor: [
+                    'rgba(220, 53, 69, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(40, 167, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(220, 53, 69)',
+                    'rgb(255, 193, 7)',
+                    'rgb(40, 167, 69)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function createTagChart(tasks) {
+    // Extract all unique tags
+    const tagCounts = {};
+    
+    tasks.forEach(task => {
+        if (task.tag && task.tag.length) {
+            if (task.tag) {
+                tagCounts[task.tag] = (tagCounts[task.tag] || 0) + 1;
+            }            
+        }
+    });
+    
+    // Sort tags by count
+    const sortedTags = Object.entries(tagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5); // Show top 5 tags
+    
+    const labels = sortedTags.map(item => item[0]);
+    const data = sortedTags.map(item => item[1]);
+    
+    // Generate colors
+    const backgroundColors = labels.map((_, i) => 
+        `hsla(${(i * 50) % 360}, 70%, 60%, 0.7)`
+    );
+    const borderColors = labels.map((_, i) => 
+        `hsla(${(i * 50) % 360}, 70%, 50%, 1)`
+    );
+    
+    const ctx = document.getElementById('tagChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} tasks`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createTimeChart(tasks) {
+    const dates = [];
+    const timeSpent = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
+        dates.push(dateStr.substring(5)); // Push only "MM-DD"
+        
+        let totalSeconds = 0;
+
+        tasks.forEach(task => {
+            if (task.timeFragments && Array.isArray(task.timeFragments)) {
+                task.timeFragments.forEach(fragment => {
+                    if (fragment.date === dateStr) {
+                        const [h, m, s] = fragment.duration.split(':').map(Number);
+                        totalSeconds += (h * 3600) + (m * 60) + s;
+                    }
+                });
+            }
+        });
+
+        const hours = totalSeconds / 3600; // convert to hours
+        timeSpent.push(parseFloat(hours.toFixed(2))); // push nicely rounded hours
+    }
+    
+    const ctx = document.getElementById('timeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Hours',
+                data: timeSpent,
+                fill: true,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Hours'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date (MM-DD)'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Time spent: ${context.raw} hours`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+function getdata(){
+    let countObj = {};
+    const countTag = document.getElementById("time-spent")
+
+    
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const analyticsTab = document.querySelector('a[href="#analytics"]');
+    if (analyticsTab) {
+        analyticsTab.addEventListener('click', () => {
+          
+            setTimeout(initializeAnalytics, 100); 
+        });
+    }
+    
+  
+    if (window.location.hash === '#analytics') {
+        setTimeout(initializeAnalytics, 100);
+    }
+    
+  
+    window.addEventListener('resize', () => {
+        if (window.location.hash === '#analytics') {
+            setTimeout(initializeAnalytics, 200);
+        }
+    });
+});

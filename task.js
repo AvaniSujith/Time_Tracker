@@ -29,6 +29,7 @@ const closeModalBtn = document.querySelectorAll(".close");
 const taskDetailsModal = document.getElementById("taskDetailsModal");
 
 const totalCountElement = document.getElementById("total-count");
+const totalTimeElement = document.getElementById("time-total");
 const ongoingCountElement = document.getElementById("ongoing-count");
 const completedCountElement = document.getElementById("completed-count");
 const pausedCountElement = document.getElementById("paused-count");
@@ -68,7 +69,8 @@ navLinks.forEach(link => {
         if(targetPage === 'works-done'){
             renderCompletedTaskTable();
         } else if(targetPage === 'analytics'){
-            renderAnalytics();
+            // Delay initialization slightly to ensure the canvas elements are ready
+            setTimeout(initializeAnalytics, 100); 
         } else if(targetPage === 'dashboard') {
             renderPausedTaskTable();
         }
@@ -255,7 +257,7 @@ function addNewTask(taskForm){
     }
 
     updateTaskCounters();
-    renderTaskLists();
+    renderPausedTaskTable();
     taskForm.remove();
 }
 
@@ -338,7 +340,7 @@ function pauseCurrentTask(){
         clearOngoingTaskDisplay();
 
         updateTaskCounters();
-        renderTaskLists();
+        renderPausedTaskTable();
     }
 }
 
@@ -362,7 +364,7 @@ function completeCurrentTask(){
         clearOngoingTaskDisplay();
 
         updateTaskCounters();
-        renderTaskLists();
+        renderPausedTaskTable();
     }
 }
 
@@ -389,7 +391,7 @@ function resumeTask(taskId){
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
     updateTaskCounters();
-    renderTaskLists();
+    renderPausedTaskTable();
 }
 
 
@@ -409,13 +411,13 @@ function completeTask(taskId){
         }
 
         updateTaskCounters();
-        renderTaskLists();
+        renderPausedTaskTable();
     }
 }
 
 
 function deleteTask(taskId){
-    if(!confirm("Confirm to dlete Task")) return;
+    if(!confirm("Confirm to delete Task")) return;
 
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     tasks = tasks.filter(t => t.id !== taskId);
@@ -428,7 +430,7 @@ function deleteTask(taskId){
     }
 
     updateTaskCounters();
-    renderTaskLists();
+    renderPausedTaskTable();
 }
 
 function clearOngoingTaskDisplay(){
@@ -500,20 +502,52 @@ function formatTimeFragment(fragments){
 function updateTaskCounters(){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+
+    // console.log(tasks);
+    // if(tasks.length > 0){
+    //     console.log(typeof tasks[0].duration, tasks[0].duration);
+    // }
+
+    const timerStack = [];
+    let totalTime = 0;
     const totalCount = tasks.length;
-    const ongoingCount = tasks.filter(t => t.status === "ongoing").length;
     const pausedCount = tasks.filter(t => t.status === "paused").length;
     const completedCount = tasks.filter(t => t.status === "completed").length;
 
+    for(let i = 0; i < totalCount; i++){
+        timerStack.push(tasks[i].timeTaken);
+    }
+
+    for(let i = 0; i< timerStack.length; i++){
+        totalTime += timeStringSpliting(timerStack[i]);
+    }
+
+    if(totalTime > 0){
+        totalTimeElement.textContent = formatTimeToSeconds(totalTime);
+    }
+
     if (totalCountElement) totalCountElement.textContent = totalCount;
-    if (ongoingCountElement) ongoingCountElement.textContent = ongoingCount;
     if (completedCountElement) completedCountElement.textContent = completedCount;
     if (pausedCountElement) pausedCountElement.textContent = pausedCount;
 }
 
 
-function renderTaskLists(){
-    renderPausedTaskTable();
+// function renderPausedTaskTable(){
+//     renderPausedTaskTable();
+// }
+
+function timeStringSpliting(time){
+    const [hours, minutes, seconds] = time.split(":").map(Number);
+    return (hours * 3600) + (minutes * 60) + seconds;
+}
+
+function formatTimeToSeconds(time){
+  
+    const h = Math.floor(time / 3600);
+    const m = Math.floor((time % 3600) / 60);
+    const s = time % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
 }
 
 
@@ -533,13 +567,12 @@ function renderPausedTaskTable(){
         const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
 
         row.innerHTML = `
-            <td>${task.id.slice(-4)}</td>
+        
             <td>${task.name}</td>
             <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
             <td><span class="tag-badge">${task.tag}</span></td> 
-            <td><span class="status-badge status-${task.status}">${task.status}</span></td>
             <td>${task.startDate}</td>
-            <td>${task.endDate || "--"}</td>
+            <td>${task.targetDate || "--"}</td>
             <td>${task.timeTaken || "00:00:00"}</td>
             <td>${timeFragmentsHtml}</td>
             <td>
@@ -565,11 +598,11 @@ function renderCompletedTaskTable(){
         const row = document.createElement("tr");
         
         row.innerHTML = `
-            <td>${task.id.slice(-4)}</td>
             <td>${task.name}</td>
             <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
             <td><span class="tag-badge">${task.tag}</span></td> 
             <td>${task.startDate}</td>
+            <td>${task.targetDate}</td>
             <td>${task.endDate || "--"}</td>
             <td>${task.timeTaken || "00:00:00"}</td>
             <td>
@@ -602,24 +635,67 @@ function showDetailsModal(taskId){
                 <span class="close">&times;</span>
                 <h2>${task.name}</h2>
                 <div class="task-details">
-                    <p><strong>Priority:</strong> <span class="priority-badge priority-${task.priority}">${task.priority}</span></p>
-                    <p><strong>Tag:</strong> <span class="tag-badge">${task.tag}</span></p>
-                    <p><strong>Status:</strong> <span class="status-badge status-${task.status}">${task.status}</span></p>
-                    <p><strong>Start Date:</strong> ${task.startDate}</p>
-                    <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
-                    <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
-                    <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
-                    <p><strong>Description:</strong> ${task.details || "No description"}</p>
+                    <div>
+                        <p class="modal-label"><strong>Priority:</strong> </p>
+                        <p class="priority-badge priority-${task.priority} modal-description">${task.priority}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Tag:</strong></p>
+                        <p class="tag-badge modal-description">${task.tag}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Status:</strong></p>
+                        <p class="status-badge status-${task.status} modal-description">${task.status}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Start Date:</strong></p>
+                        <p class="start-date modal-description">${task.startDate}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>End Date:</strong></p>
+                        <p class="end-date modal-description">${task.endDate || "--"}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Target Date:</strong></p>
+                        <p class="target-date modal-description"> ${task.targetDate || "--"}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Total Time Taken:</strong></p>
+                        <p class="time-taken modal-decription">${task.timeTaken || "00:00:00"}</p>
+                    </div>
+                    <div>
+                        <p class="modal-label"><strong>Description:</strong></p>
+                        <p class="task-taken modal-decription">${task.details || "No description"}</p>
+                    </div>
 
                     <h3>Time Details</h3>
-                    <div class="time-fragments">
-                        ${(task.timeFragments || []).map(f => `
-                            <div class="time-fragment">
-                                <p>${f.date}: ${f.duration}</p>
-                            </div>
-                        `).join("")}
-                    </div>
+                    <section class="time-fragments">
+                      
+                        <div class="table-container">
+                            <table class="time-fragment-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                ${(task.timeFragments || []).map(f => `
+
+                                    <tr>
+                                        <td>${f.date}</td>
+                                        <td>${f.duration}</td>
+                                    </tr>
+
+                                `).join("")}
+
+                                </tbody>
+                            </table>
+                        </div>
+
                     
+                </section>
                     <div class="action-buttons">
                         ${task.status === "paused" ? `<button class="btn-primary" onclick="resumeTask('${task.id}')">Resume Task</button>` : ''}
                         <button class="btn-secondary" onclick="editTask('${task.id}')">Edit Task</button>
@@ -638,40 +714,85 @@ function showDetailsModal(taskId){
         });
         
         modalElement.style.display = "flex";
+
     } else {
-        // Update existing modal
+        
         detailsContainer.innerHTML = `
             <span class="close">&times;</span>
             <h2>${task.name}</h2>
             <div class="task-details">
-                <p><strong>Priority:</strong> <span class="priority-badge priority-${task.priority}">${task.priority}</span></p>
-                <p><strong>Tag:</strong> <span class="tag-badge">${task.tag}</span></p>
-                <p><strong>Status:</strong> <span class="status-badge status-${task.status}">${task.status}</span></p>
-                <p><strong>Start Date:</strong> ${task.startDate}</p>
-                <p><strong>End Date:</strong> ${task.endDate || "--"}</p>
-                <p><strong>Target Date:</strong> ${task.targetDate || "--"}</p>
-                <p><strong>Total Time Taken:</strong> ${task.timeTaken || "00:00:00"}</p>
-                <p><strong>Description:</strong> ${task.details || "No description"}</p>
+                <div>
+                    <p class="modal-label"><strong>Priority:</strong> </p>
+                    <p class="priority-badge priority-${task.priority} modal-description">${task.priority}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Tag:</strong></p>
+                    <p class="tag-badge modal-description">${task.tag}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Status:</strong></p>
+                    <p class="status-badge status-${task.status} modal-description">${task.status}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Start Date:</strong></p>
+                    <p class="start-date modal-description">${task.startDate}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>End Date:</strong></p>
+                    <p class="end-date modal-description">${task.endDate || "--"}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Target Date:</strong></p>
+                    <p class="target-date modal-description"> ${task.targetDate || "--"}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Total Time Taken:</strong></p>
+                    <p class="time-taken modal-description">${task.timeTaken || "00:00:00"}</p>
+                </div>
+                <div>
+                    <p class="modal-label"><strong>Description:</strong></p>
+                    <p class="task-taken modal-description">${task.details || "No description"}</p>
+                </div>
 
                 <h3>Time Details</h3>
-                <div class="time-fragments">
-                    ${(task.timeFragments || []).map(f => `
-                        <div class="time-fragment">
-                            <p>${f.date}: ${f.duration}</p>
+                <section class="time-fragments">
+                    
+                       
+                        <div class="table-container">
+                            <table class="time-fragment-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                ${(task.timeFragments || []).map(f => `
+
+                                    <tr>
+                                        <td>${f.date}</td>
+                                        <td>${f.duration}</td>
+                                    </tr>
+
+                                `).join("")}
+
+                                </tbody>
+                            </table>
                         </div>
-                    `).join("")}
-                </div>
+
+                    
+                </section>
                 
                 <div class="action-buttons">
-                    ${task.status === "paused" ? `<button class="btn-primary" onclick="resumeTask('${task.id}')">Resume Task</button>` : ''}
-                    <button class="btn-secondary" onclick="editTask('${task.id}')">Edit Task</button>
-                    ${task.status !== "completed" ? `<button class="btn-success" onclick="completeTask('${task.id}')">Complete Task</button>` : ''}
-                    <button class="btn-danger" onclick="deleteTask('${task.id}')">Delete Task</button>
+                    ${task.status === "paused" ? `<button class="btn-resume" onclick="resumeTask('${task.id}')">Resume Task</button>` : ''}
+                    <button class="btn-edit" onclick="editTask('${task.id}')">Edit Task</button>
+                    ${task.status !== "completed" ? `<button class="btn-completed" onclick="completeTask('${task.id}')">Complete Task</button>` : ''}
+                    <button class="btn-delete" onclick="deleteTask('${task.id}')">Delete Task</button>
                 </div>
             </div>
         `;
         
-     
         taskDetailsModal.querySelector(".close").addEventListener("click", () => {
             taskDetailsModal.style.display = "none";
         });
@@ -803,167 +924,11 @@ function updateTaskData(taskId, editForm){
         }
     }
 
+
     localStorage.setItem("tasks", JSON.stringify(tasks));
     updateTaskCounters();
-    renderTaskLists();
+    renderPausedTaskTable();
 }
-
-
-function renderAnalytics() {
-    const analyticsContainer = document.getElementById('analytics-container');
-    if (!analyticsContainer) return;
-    
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    
-    // Clear previous charts
-    analyticsContainer.innerHTML = `
-        <div class="analytics-row">
-            <div class="analytics-card">
-                <h3>Task Status</h3>
-                <canvas id="statusChart"></canvas>
-            </div>
-            <div class="analytics-card">
-                <h3>Task Priorities</h3>
-                <canvas id="priorityChart"></canvas>
-            </div>
-        </div>
-        <div class="analytics-row">
-            <div class="analytics-card">
-                <h3>Tasks by Tag</h3>
-                <canvas id="tagChart"></canvas>
-            </div>
-            <div class="analytics-card">
-                <h3>Time Spent</h3>
-                <canvas id="timeChart"></canvas>
-            </div>
-        </div>
-    `;
-    
-    // Status chart data
-    const statusCounts = {
-        ongoing: tasks.filter(t => t.status === 'ongoing').length,
-        paused: tasks.filter(t => t.status === 'paused').length,
-        completed: tasks.filter(t => t.status === 'completed').length
-    };
-    
-    // Priority chart data
-    const priorityCounts = {
-        high: tasks.filter(t => t.priority === 'high').length,
-        medium: tasks.filter(t => t.priority === 'medium').length,
-        low: tasks.filter(t => t.priority === 'low').length
-    };
-    
-    // Tag chart data
-    // Tag chart data
-    const tagCounts = {};
-    tasks.forEach(task => {
-        if (task.tag) {
-            tagCounts[task.tag] = (tagCounts[task.tag] || 0) + 1;
-        }
-    });
-    
-    // Time chart data - calculate time spent on each tag
-    const tagTimeSpent = {};
-    tasks.forEach(task => {
-        if (task.tag && task.timeTaken) {
-            // Convert time string to seconds for calculation
-            const [hours, minutes, seconds] = task.timeTaken.split(':').map(Number);
-            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-            
-            tagTimeSpent[task.tag] = (tagTimeSpent[task.tag] || 0) + totalSeconds;
-        }
-    });
-    
-    // Convert seconds back to hours for display
-    Object.keys(tagTimeSpent).forEach(tag => {
-        const hours = Math.floor(tagTimeSpent[tag] / 3600);
-        tagTimeSpent[tag] = parseFloat((tagTimeSpent[tag] / 3600).toFixed(2)); // Convert to hours with 2 decimal places
-    });
-    
-    // Create Status Chart
-    const statusCtx = document.getElementById('statusChart').getContext('2d');
-    new Chart(statusCtx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(statusCounts),
-            datasets: [{
-                data: Object.values(statusCounts),
-                backgroundColor: ['#4CAF50', '#FFC107', '#2196F3'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-    
-    // Create Priority Chart
-    const priorityCtx = document.getElementById('priorityChart').getContext('2d');
-    new Chart(priorityCtx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(priorityCounts),
-            datasets: [{
-                data: Object.values(priorityCounts),
-                backgroundColor: ['#F44336', '#FF9800', '#8BC34A'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-    
-    // Create Tag Chart
-    const tagCtx = document.getElementById('tagChart').getContext('2d');
-    new Chart(tagCtx, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(tagCounts),
-            datasets: [{
-                label: 'Number of Tasks',
-                data: Object.values(tagCounts),
-                backgroundColor: '#3F51B5',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            }
-        }
-    });
-    
-    // Create Time Chart
-    const timeCtx = document.getElementById('timeChart').getContext('2d');
-    new Chart(timeCtx, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(tagTimeSpent),
-            datasets: [{
-                label: 'Hours Spent',
-                data: Object.values(tagTimeSpent),
-                backgroundColor: '#009688',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
 // Timer functions
 function timerStart() {
     if (timer) return;
@@ -1032,7 +997,7 @@ if (pauseTimerBtn) {
 if (endTimerBtn) {
     endTimerBtn.addEventListener('click', () => {
         completeCurrentTask();
-    });
+    }); 
 }
 
 function initApp() {
@@ -1054,7 +1019,7 @@ function initApp() {
     }
     
     updateTaskCounters();
-    renderTaskLists();
+    renderPausedTaskTable();
     
 
     window.onclick = function(event) {
@@ -1100,6 +1065,7 @@ function initializeAnalytics() {
             </div>
         </div>
     `;
+
     // Get all tasks from localStorage
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     
@@ -1215,13 +1181,13 @@ function createPriorityChart(tasks) {
 }
 
 function createTagChart(tasks) {
-    // Extract all unique tags
+    
     const tagCounts = {};
     
     tasks.forEach(task => {
-        if (task.tags && task.tags.length) {
-            task.tags.forEach(tag => {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        if (task.tag && task.tag.length) {
+            task.tag.forEach(eachTag => {
+                tagCounts[eachTag] = (tagCounts[eachTag] || 0) + 1;
             });
         }
     });
@@ -1271,11 +1237,11 @@ function createTagChart(tasks) {
                     }
                 }
             }
-        }
+        } 
     });
 }
 
-function createTimeChart(tasks) {
+function createTimeChart(tasks) { 
 
     const dates = [];
     const timeSpent = [];
@@ -1285,13 +1251,26 @@ function createTimeChart(tasks) {
         date.setDate(date.getDate() - i);
         const dateStr = date.toISOString().split('T')[0];
         dates.push(dateStr.substring(5)); 
+
+        let dayTotalSeconds = 0;
         
-        const dayTotal = tasks.reduce((total, task) => {
-            const taskDate = task.timeSpent && task.timeSpent[dateStr];
-            return total + (taskDate || 0);
-        }, 0);
+        // const dayTotal = tasks.reduce((total, task) => {
+        //     const taskDate = task.timeTaken && task.timeTaken[dateStr];
+        //     return total + (taskDate || 0);
+        // }, 0);
+
+        tasks.forEach(task => {
+            if(task.timeFragments && Array.isArray(task.timeFragments)){
+                task.timeFragments.forEach(fragment => {
+                    if(fragment.date === dateStr){
+                        const [h, m, s] = fragment.duration.split(":").map(Number);
+                        dayTotalSeconds += h * 3600 + m * 60 + s;
+                    }
+                });
+            }
+        });
         
-        timeSpent.push(dayTotal / 60); 
+        timeSpent.push(dayTotalSeconds / 3600); 
     }
     
     const ctx = document.getElementById('timeChart').getContext('2d');
@@ -1339,7 +1318,7 @@ function createTimeChart(tasks) {
                         label: function(context) {
                             return `Time spent: ${context.raw.toFixed(2)} hours`;
                         }
-                    }
+                    } 
                 }
             }
         }
@@ -1371,3 +1350,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', initApp);
+
+
