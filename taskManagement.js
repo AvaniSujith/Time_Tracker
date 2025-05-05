@@ -1062,7 +1062,6 @@ function initApp() {
 function initializeAnalytics() {
     const analyticsContainer = document.querySelector('.analytics-container');
     
-    // Create a better structured layout for analytics    // Make functions available globally
 
     analyticsContainer.innerHTML = `
         <div class="analytics-row">
@@ -1086,10 +1085,8 @@ function initializeAnalytics() {
             </div>
         </div>
     `;
-    // Get all tasks from localStorage
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     
-    // Initialize charts
     createStatusChart(tasks);
     createPriorityChart(tasks);
     createTagChart(tasks);
@@ -1367,3 +1364,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+

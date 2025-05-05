@@ -1,6 +1,5 @@
 
 
-document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('.sidebar-aside');
     const sidebarToggler = document.querySelector(".sidebar-toggler");
     const menuToggler = document.querySelector(".menu-toggler");
@@ -15,15 +14,105 @@ document.addEventListener('DOMContentLoaded', function() {
     const mainContent = document.querySelector('main');
     const mainNav = document.querySelector('.main-nav');
 
+    const editBtn = document.getElementById("editProfileBtn");
+
     const collapsedSidebarHeight = "60px";
     
     const modals = document.querySelectorAll('.modal');
 
     // if(toggleBtn){
     //     toggleBtn.addEventListener("click", () => {
-    //         sidebar.classList.toggle("collapse")
+    //         sidebar.classList.toggle("collapse");
     //     });
     // }
+
+    editBtn.addEventListener("click", editForm);
+
+    function editForm(){
+        // console.log("btn clicked")
+        let editingModal = document.createElement("div");
+        editingModal.id = "editingModal"
+        editingModal.classList.add("modal");
+
+        editingModal.innerHTML =`
+        <div class="modal-content">
+
+            <span class="close">&times;</span>
+            
+            <div class="editing-modal-box">
+                <h2 class="edit-page-header">Edit Profile</h2>
+                <div class="personal-detail">
+
+                    <div class="profile-first-name details">
+                        <label for="firstName">First name</label>
+                        <input type="text">
+                    </div>
+
+                    <div class="profile-last-name details">
+                        <label for="lastName">Last name</label>
+                        <input type="text">
+                    </div>
+
+                    <div class="profile-designation details">
+                        <label for="designation">Designation</label>
+                        <input type="text">
+                    </div>
+
+                    <div class="profile-email details">
+                        <label for="profileEmail">Email</label>
+                        <input type="email">
+                    </div>
+
+                    <div class="profile-dob details">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date">
+                    </div>
+
+                     <div class="details-about details">
+                        <label for="about">About</label>
+                        <textarea id="about-me"></textarea>
+                    </div>
+                </div>
+               
+                <div class="account-details">
+                    <div class="acc-details">
+                        <label for="github">
+                            <i class="fab fa-github"></i>
+                        </label>
+                        <input type="url" id="githubProfile">
+                    </div>
+
+                    <div class="acc-details">
+                        <label for="linkedIn">
+                            <i class="fa-brands fa-linkedin"></i>
+                        </label>
+                        <input type="url" id="linkedInProfile">
+                    </div>
+
+                    <div class="acc-details">
+                        <label for="leetcode">
+                            <i class="fab fa-hackerrank"></i>
+                        </label>
+                        <input type="url" id="fa-hackerRankProfile">
+                    </div>
+
+                </div> 
+
+                <div class="submit-btn">
+                    <button id="submission">Submit</button>
+                </div>
+            </div>
+        </div>
+        `;
+
+        document.body.appendChild(editingModal);
+
+        editingModal.querySelector(".close").addEventListener("click", () => {
+            editingModal.style.display = "none";
+        });
+
+        editingModal.style.display = "flex";
+    }
 
     sidebarToggler.classList.add("collapse");
 
@@ -245,8 +334,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('joinDate', newUser.joinDate);
             
         
-            signUpError.style.color = 'green';
-            signUpError.textContent = 'Account created successfully! Redirecting...';
+            signUpError.style.color = 'green'; 
+            signUpError.textContent = 'Account created successfully! Redirecting';
             
           
             initializeUserTasks(email);
@@ -342,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.closest('.nav-item').classList.add('active');
         });
     });
-});
+
 
 
 function handleLogout(e) {

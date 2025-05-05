@@ -4,8 +4,8 @@
 
 const sidebar = document.querySelector('.sidebar-aside');
 const toggleBtn = document.querySelector(".toggler");
-// console.log("btn found", toggleBtn)
 
+// console.log("btn found", toggleBtn)
 
 // if(toggleBtn){
 // toggleBtn.addEventListener("click", () => {
@@ -16,7 +16,6 @@ const toggleBtn = document.querySelector(".toggler");
 // }else{
 //     console.log("not found")
 // }
-
 
 const addNew = document.getElementById("addTaskBtn");
 const moreBtn = document.getElementById("moreBtn");
@@ -41,6 +40,8 @@ const endTimerBtn = document.getElementById("endTimerBtn");
 
 const navLinks = document.querySelectorAll('.nav-link[data-page]');
 const pages = document.querySelectorAll('.page');
+const applyFilterBtn = document.getElementById('applyFiltersBtn');
+
 
 let timer = null;
 let seconds = 0;
@@ -69,7 +70,6 @@ navLinks.forEach(link => {
         if(targetPage === 'works-done'){
             renderCompletedTaskTable();
         } else if(targetPage === 'analytics'){
-            // Delay initialization slightly to ensure the canvas elements are ready
             setTimeout(initializeAnalytics, 100); 
         } else if(targetPage === 'dashboard') {
             renderPausedTaskTable();
@@ -127,6 +127,7 @@ if (viewDetailsBtn) {
         taskOptions.style.display = "none";
     });
 }
+
 
 function addNewTaskForm(){
     const taskForm = document.createElement("div");
@@ -561,9 +562,8 @@ function renderPausedTaskTable(){
     const pausedTasks = tasks.filter(t => t.status === "paused");
 
     pausedTasks.forEach((task, index) => {
+
         const row = document.createElement("tr");
-        
-      
         const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
 
         row.innerHTML = `
@@ -594,7 +594,7 @@ function renderCompletedTaskTable(){
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const completedTasks = tasks.filter(t => t.status === "completed");
 
-    completedTasks.forEach((task, index) => {
+    completedTasks.forEach(task => {
         const row = document.createElement("tr");
         
         row.innerHTML = `
@@ -611,6 +611,7 @@ function renderCompletedTaskTable(){
         `;
 
         completedTableBody.appendChild(row);
+
     });
 }
 
@@ -790,6 +791,7 @@ function showDetailsModal(taskId){
                     ${task.status !== "completed" ? `<button class="btn-completed" onclick="completeTask('${task.id}')">Complete Task</button>` : ''}
                     <button class="btn-delete" onclick="deleteTask('${task.id}')">Delete Task</button>
                 </div>
+
             </div>
         `;
         
@@ -803,8 +805,9 @@ function showDetailsModal(taskId){
 
 
 function editTask(taskId) {
+    
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const task = tasks.find(t => t.id === taskId);
+    const task = tasks.find(t => t.id === taskId); 
     
     if (!task) return;
     
@@ -929,7 +932,7 @@ function updateTaskData(taskId, editForm){
     updateTaskCounters();
     renderPausedTaskTable();
 }
-// Timer functions
+
 function timerStart() {
     if (timer) return;
     
@@ -976,7 +979,6 @@ function updateTimer() {
         `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Event listeners for timer buttons
 if (startTimerBtn) {
     startTimerBtn.addEventListener('click', () => {
         const activeTaskId = localStorage.getItem("activeTaskId");
@@ -1041,7 +1043,6 @@ function initApp() {
 function initializeAnalytics() {
     const analyticsContainer = document.querySelector('.analytics-container');
     
-    // Create a better structured layout for analytics    // Make functions available globally
 
     analyticsContainer.innerHTML = `
         <div class="analytics-row">
@@ -1050,196 +1051,73 @@ function initializeAnalytics() {
                 <canvas id="statusChart"></canvas>
             </div>
             <div class="analytics-card">
-                <h3>Tasks by Priority</h3>
-                <canvas id="priorityChart"></canvas>
-            </div>
-        </div>
-        <div class="analytics-row">
-            <div class="analytics-card">
-                <h3>Tasks by Tag</h3>
-                <canvas id="tagChart"></canvas>
-            </div>
-            <div class="analytics-card">
                 <h3>Time Spent (Hours)</h3>
                 <canvas id="timeChart"></canvas>
             </div>
         </div>
     `;
 
-    // Get all tasks from localStorage
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     
-    // Initialize charts
-    createStatusChart(tasks);
-    createPriorityChart(tasks);
-    createTagChart(tasks);
+
+
+    // createStatusChart(tasks);
+   
     createTimeChart(tasks);
 }
 
-function createStatusChart(tasks) {
-    const statusCounts = {
-        'ongoing': 0,
-        'paused': 0,
-        'completed': 0
-    };
+// function createStatusChart(tasks) {
+//     const statusCounts = {
+//         'ongoing': 0,
+//         'paused': 0,
+//         'completed': 0
+//     };
     
-    tasks.forEach(task => {
-        statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
-    });
+//     tasks.forEach(task => {
+//         statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
+//     });
     
-    const ctx = document.getElementById('statusChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Ongoing', 'Paused', 'Completed'],
-            datasets: [{
-                data: [statusCounts.ongoing, statusCounts.paused, statusCounts.completed],
-                backgroundColor: [
-                    'rgba(58, 110, 165, 0.7)',
-                    'rgba(255, 159, 28, 0.7)',
-                    'rgba(40, 167, 69, 0.7)'
-                ],
-                borderColor: [
-                    'rgb(58, 110, 165)',
-                    'rgb(255, 159, 28)',
-                    'rgb(40, 167, 69)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.raw || 0;
-                            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-                            const percentage = Math.round((value / total) * 100);
-                            return `${label}: ${value} (${percentage}%)`;
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-function createPriorityChart(tasks) {
-    const priorityCounts = {
-        'high': 0,
-        'medium': 0,
-        'low': 0
-    };
-    
-    tasks.forEach(task => {
-        priorityCounts[task.priority] = (priorityCounts[task.priority] || 0) + 1;
-    });
-    
-    const ctx = document.getElementById('priorityChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['High', 'Medium', 'Low'],
-            datasets: [{
-                label: 'Number of Tasks',
-                data: [priorityCounts.high, priorityCounts.medium, priorityCounts.low],
-                backgroundColor: [
-                    'rgba(220, 53, 69, 0.7)',
-                    'rgba(255, 193, 7, 0.7)',
-                    'rgba(40, 167, 69, 0.7)'
-                ],
-                borderColor: [
-                    'rgb(220, 53, 69)',
-                    'rgb(255, 193, 7)',
-                    'rgb(40, 167, 69)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        precision: 0
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-}
-
-function createTagChart(tasks) {
-    
-    const tagCounts = {};
-    
-    tasks.forEach(task => {
-        if (task.tag && task.tag.length) {
-            task.tag.forEach(eachTag => {
-                tagCounts[eachTag] = (tagCounts[eachTag] || 0) + 1;
-            });
-        }
-    });
-    
-    // Sort tags by count
-    const sortedTags = Object.entries(tagCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5); // Show top 5 tags
-    
-    const labels = sortedTags.map(item => item[0]);
-    const data = sortedTags.map(item => item[1]);
-    
-    // Generate colors
-    const backgroundColors = labels.map((_, i) => 
-        `hsla(${(i * 50) % 360}, 70%, 60%, 0.7)`
-    );
-    const borderColors = labels.map((_, i) => 
-        `hsla(${(i * 50) % 360}, 70%, 50%, 1)`
-    );
-    
-    const ctx = document.getElementById('tagChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'polarArea',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'right',
-                    labels: {
-                        boxWidth: 12
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.raw} tasks`;
-                        }
-                    }
-                }
-            }
-        } 
-    });
-}
+//     const ctx = document.getElementById('statusChart').getContext('2d');
+//     new Chart(ctx, {
+//         type: 'doughnut',
+//         data: {
+//             labels: ['Ongoing', 'Paused', 'Completed'],
+//             datasets: [{
+//                 data: [statusCounts.ongoing, statusCounts.paused, statusCounts.completed],
+//                 backgroundColor: [
+//                     'rgba(58, 110, 165, 0.7)',
+//                     'rgba(255, 159, 28, 0.7)',
+//                     'rgba(40, 167, 69, 0.7)'
+//                 ],
+//                 borderColor: [
+//                     'rgb(58, 110, 165)',
+//                     'rgb(255, 159, 28)',
+//                     'rgb(40, 167, 69)'
+//                 ],
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             responsive: true,
+//             plugins: {
+//                 legend: {
+//                     position: 'bottom',
+//                 },
+//                 tooltip: {
+//                     callbacks: {
+//                         label: function(context) {
+//                             const label = context.label || '';
+//                             const value = context.raw || 0;
+//                             const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+//                             const percentage = Math.round((value / total) * 100);
+//                             return `${label}: ${value} (${percentage}%)`;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     });
+// }
 
 function createTimeChart(tasks) { 
 
@@ -1262,17 +1140,27 @@ function createTimeChart(tasks) {
         tasks.forEach(task => {
             if(task.timeFragments && Array.isArray(task.timeFragments)){
                 task.timeFragments.forEach(fragment => {
-                    if(fragment.date === dateStr){
-                        const [h, m, s] = fragment.duration.split(":").map(Number);
+                    if(fragment.date === dateStr && fragment.duration){
+                        // const [h, m, s] = fragment.duration.split(":").map(Number);
+
+                        const parts = fragment.duration.split(":").map(Number);
+                        const h = parts[0] || 0;
+                        const m = parts[1] || 0;
+                        const s = parts[2] || 0;
+
                         dayTotalSeconds += h * 3600 + m * 60 + s;
                     }
                 });
-            }
+            } 
         });
         
-        timeSpent.push(dayTotalSeconds / 3600); 
+        // timeSpent.push(parseFloat(dayTotalSeconds / 3600).toFixed(2)); 
+        // timeSpent.push(Number((dayTotalSeconds / 3600).toFixed(2)));
+        timeSpent.push(dayTotalSeconds);
     }
-    
+    const maxTime = Math.max(...timeSpent);
+    const roundedMax = Math.ceil(maxTime / 60) * 60 || 60;
+
     const ctx = document.getElementById('timeChart').getContext('2d');
     new Chart(ctx, {
         type: 'line',
@@ -1295,13 +1183,16 @@ function createTimeChart(tasks) {
             scales: {
                 y: {
                     beginAtZero: true,
+                    min: 0,
+                    max: roundedMax,
                     title: {
                         display: true,
-                        text: 'Hours'
+                        text: 'seconds'
                     },
                     ticks: {
                         callback: function(value) {
-                            return value.toFixed(1);
+                            // return value.toFixed(1);
+                            return value + ' sec';
                         }
                     }
                 },
@@ -1316,7 +1207,11 @@ function createTimeChart(tasks) {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return `Time spent: ${context.raw.toFixed(2)} hours`;
+                            const totalSeconds = context.raw;
+                            const min = Math.floor(totalSeconds / 60);
+                            const sec = totalSeconds % 60;
+                            // return `Time spent: ${context.raw.toFixed(2)} hours`;
+                            return `Time spent: ${min}m ${sec}s`;
                         }
                     } 
                 }
@@ -1327,7 +1222,8 @@ function createTimeChart(tasks) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const analyticsTab = document.querySelector('a[href="#analytics"]');
+
+    const analyticsTab = document.querySelector('.nav-link[data-page="#analytics"]');
     if (analyticsTab) {
         analyticsTab.addEventListener('click', () => {
           
@@ -1335,20 +1231,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-  
     if (window.location.hash === '#analytics') {
         setTimeout(initializeAnalytics, 100);
     }
     
   
     window.addEventListener('resize', () => {
-        if (window.location.hash === '#analytics') {
+        const activePage = document.querySelector('.page.active');
+        if(activePage && activePage.id === 'analytics-page'){
             setTimeout(initializeAnalytics, 200);
         }
     });
+
 });
 
 
 document.addEventListener('DOMContentLoaded', initApp);
-
-

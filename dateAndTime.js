@@ -49,4 +49,4 @@ setInterval(() => {
     timeToday.textContent = getTime(now);
     dateToday.textContent = getDate(now);
 
-}, 200)
+}, 200);
