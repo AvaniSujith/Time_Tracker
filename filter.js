@@ -14,7 +14,7 @@ function filteration(){
     const name = filterName.value.trim().toLowerCase();
     const tag = filterTag.value.trim().toUpperCase();
     const priority = filterPriority.value;
-    const status = filterStatus.value;
+    const status = filterStatus.value;    
     const startDate = filterStartDate.value;
     const endDate = filterEndDate.value;
 
@@ -56,13 +56,13 @@ function filteration(){
             </td>
         `;
 
-        filteredTasks.appendChild(row);
+        tbody.appendChild(row);
 
     });
 }
 
 function viewDetails(taskId){
-    const allTasks = JSON.parse(localStorage.getItem("allTasks")) || [];
+    const allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const task = allTasks.find(t => t.id === taskId);
 
     const taskDetailsModal = document.getElementById("taskDetailsModal");
@@ -71,7 +71,7 @@ function viewDetails(taskId){
     if(!taskDetailsModal || !detailsContainer){
 
         const modalElement = document.createElement("div");
-        modalElement.id = "taskDetailsModal";
+        modalElement.id = "taskDetailsModal"; 
         modalElement.classList.add("modal");
 
         modalElement.innerHTML = `

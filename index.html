@@ -12,24 +12,34 @@
     
 </head>
 <body>
-    <!-- <section id="Login" >
 
-    <div class="l-form">
+    <div class="page active" id="login-page">
+        <section id="Login" >
+            <div class="login-form">
+            
+                <h2>Login Page</h2>
+                <form action="">
+                    
+                    <label>
+                        <i class="fa-solid fa-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="userEmail"/>
     
-        <h2>Login Page</h2>
-        <form action="">
-            <label>
-                Username
-            </label>
-            <input />
+                    <label>
+                        <i class="fa-solid fa-lock"></i>
+                        password
+                    </label>
+                    <input type="password" id="userPassword"/>
+                                       
+                </form> 
+                <button class="authenticationBtn" id="loginBtn">
+                    Login 
+                </button>
 
-            <label>
-                Password
-            </label>
-        </form>
-        
+            </div>
+        </section> 
     </div>
-    </section> -->
 
     <nav class="main-nav">
         <div class="date-time">
@@ -158,7 +168,7 @@
 
     <main>
 
-        <div class="page active" id="dashboard-page">
+        <div class="page" id="dashboard-page">
 
        
 
@@ -463,8 +473,12 @@
             <div class="profile-container">
                 <div class="profile-info">
                     <div class="profile-avatar">
-                        <span class="material-symbols-rounded profile-icon">
+                        <!-- <span class="material-symbols-rounded profile-icon">
                             account_circle
+                        </span> -->
+
+                        <span class="profile-pic">
+                            <button class="profile-btn">Add Photo</button>
                         </span>
                         <!-- <div class="designation-title">
                             <p class="title-me">Engineer</p>
@@ -479,18 +493,23 @@
                         </div>
                         
                         <div class="profile-designation details">
-                            <p class="designation label-title">Engineer</p>
+                            <p class="designation label-title">Designation</p>
                             <p id="designation"></p>
                         </div>
 
                         <div class="profile-email details">
-                            <p class="email label-title">avani@gmail.com</p>
+                            <p class="email label-title">Email</p>
                             <p id="email"></p>
                         </div>
 
-                        <div class="profile-membership details">
+                        <div class="profile-dateOfBirth details">
                             <p class="birthdate label-title">Date of Birth</p>
                             <p id="birthDate"></p>
+                        </div>
+
+                        <div class="profile-membership details">
+                            <p class="about-me label-title">Member Since</p>
+                            <p id="memberSinceContent"></p>
                         </div>
 
                         <div class="profile-about details">
@@ -518,7 +537,6 @@
                                 <span id="github-id"></span>
                             </p>
                         </div>
-
                         <!-- <p id="profileEmail">avani@gmail,com</p>
                         <p id="memberSince">Member since: nov</p>
                         <p id="dateOfBirth">01/12/2002</p>
@@ -530,7 +548,7 @@
                         </div> -->
                     </div>
 
-                    
+             
 <!-- 
                     <div class="edit-page-header">Edit Profile</div>
                     <div class="personal-detail">
@@ -573,16 +591,96 @@
 
                     </div> -->
                 </div>
-                <div class="profile-stats">
-                    <div class="stat-card">
+                <!-- <div class="user-statistics">
+                    <div class="attendance-view">
+                        <div class="filter-arrows">
 
+                            <div class="arrow" id="backward">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </div>
+
+                            <div class="date-range">
+                                <p class="week-detail">
+
+                                </p>
+                            </div>
+
+                            <div class="arrow" id="forward">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </div>
+                           
+                        </div>
+                        <div class="calender">
+                            <div class="monday"></div>
+                            <div class="tuesday"></div>
+                            <div class="wednesday"></div>
+                            <div class="thursday"></div>
+                            <div class="friday"></div>
+                            <div class="saturday"></div>
+                            <div class="sunday"></div>
+                        </div>
                     </div>
-                </div>
+                    <div class="profile-stats">
+                        <div class="stat-card">
+    
+                        </div>
+                    </div>
+                </div> -->
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+                <!-- <div class="container">
+                    <div class="left">
+                        <div class="calender">
+                            <div class="month">
+                                <i class="fa fa-angle-left prev"></i>
+                                <div class="date">May 2025</div>
+                                <i class="fa fa-angle-right next"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
             </div>
         </div>
     </main>
 
-    <div id="taskOptions" class="modal">
+
+
+
+    <!-- <div id="taskOptions" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>Task Options</h3>
@@ -602,7 +700,11 @@
 
             </div>
         </div>
-    </div>
+    </div> -->
+
+
+
+
 
     <!-- <div>
         <canvas id="myChart"></canvas>
@@ -613,10 +715,11 @@
       <!-- <script src="script.js"></script> -->
     
       <!-- <script src="timer.js"></script> -->
-       <!-- <script src="authentication.js"></script> -->
+
+       <script src="authentication.js"></script>
       <script src="dateAndTime.js"></script>
       <script src="task.js"></script> 
       <script src="filter.js"></script>
 
-</body>
+</body> 
 </html>

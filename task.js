@@ -7,15 +7,15 @@ const toggleBtn = document.querySelector(".toggler");
 
 // console.log("btn found", toggleBtn)
 
-// if(toggleBtn){
-// toggleBtn.addEventListener("click", () => {
-// //    sidebar.classList.toggle("collapse")
-// console.log("found")
+if(toggleBtn){
+toggleBtn.addEventListener("click", () => {
+//    sidebar.classList.toggle("collapse")
+console.log("found")
 
-//  });
-// }else{
-//     console.log("not found")
-// }
+ });
+}else{
+    console.log("not found")
+}
 
 const addNew = document.getElementById("addTaskBtn");
 const moreBtn = document.getElementById("moreBtn");

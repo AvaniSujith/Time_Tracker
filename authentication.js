@@ -13,6 +13,7 @@
     const authSection = document.querySelector('.authentication');
     const mainContent = document.querySelector('main');
     const mainNav = document.querySelector('.main-nav');
+    const loginPage = document.querySelector("#login-page")
 
     const editBtn = document.getElementById("editProfileBtn");
 
@@ -25,6 +26,14 @@
     //         sidebar.classList.toggle("collapse");
     //     });
     // }
+
+
+    if(mainNav && sidebar && loginPage){
+
+        mainNav.style.display = "none";
+        sidebar.style.display = "none";
+        
+    }
 
     editBtn.addEventListener("click", editForm);
 
@@ -68,7 +77,12 @@
                         <input type="date">
                     </div>
 
-                     <div class="details-about details">
+                    <div class="profile-phone details">
+                        <label for="profilePhone">Phone</label>
+                        <input type="phone">
+                    </div>
+
+                    <div class="details-about details">
                         <label for="about">About</label>
                         <textarea id="about-me"></textarea>
                     </div>
@@ -95,7 +109,6 @@
                         </label>
                         <input type="url" id="fa-hackerRankProfile">
                     </div>
-
                 </div> 
 
                 <div class="submit-btn">
@@ -133,44 +146,43 @@
     modals.forEach(modal => {
         modal.style.display ='none';
     });
-   
   
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-        const userData = JSON.parse(currentUser);
+    // const currentUser = localStorage.getItem('currentUser');
+    // if (currentUser) {
+    //     const userData = JSON.parse(currentUser);
         
         
-        authSection.style.display = 'none';
-        mainContent.style.display = 'block';
-        sidebar.style.display = 'flex';
-        mainNav.style.display = 'flex';
+    //     authSection.style.display = 'none';
+    //     mainContent.style.display = 'block';
+    //     sidebar.style.display = 'flex';
+    //     mainNav.style.display = 'flex';
         
-        if(document.getElementById('profileName')){
-            document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
-        }
+    //     if(document.getElementById('profileName')){
+    //         document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
+    //     }
 
-        if(document.getElementById('profileEmail')){
-            document.getElementById('profileEmail').textContent = userData.email;
-        } 
+    //     if(document.getElementById('profileEmail')){
+    //         document.getElementById('profileEmail').textContent = userData.email;
+    //     } 
 
-        if(document.getElementById('memberSince') && userData.joinDate){
-            document.getElementById('memberSince').textContent = `Member since: ${userData.joinDate}`;
-        }
+    //     if(document.getElementById('memberSince') && userData.joinDate){
+    //         document.getElementById('memberSince').textContent = `Member since: ${userData.joinDate}`;
+    //     }
         
         
-        loadUserTasks(userData.email);
+    //     loadUserTasks(userData.email);
         
         
-        if (typeof updateTaskTables === 'function') {
-            updateTaskTables();
-        }
-    } else {
+    //     if (typeof updateTaskTables === 'function') {
+    //         updateTaskTables();
+    //     }
+    // } else {
        
-        authSection.style.display = 'flex';
-        mainContent.style.display = 'none';
-        sidebar.style.display = 'none';
-        mainNav.style.display = 'none';
-    }
+    //     authSection.style.display = 'flex';
+    //     mainContent.style.display = 'none';
+    //     sidebar.style.display = 'none';
+    //     mainNav.style.display = 'none';
+    // }
     
    
     if(toggleButton){
@@ -181,7 +193,7 @@
             const isSignUp = signUpForm.classList.contains('active');
             toggleButton.textContent = isSignUp ? 'Sign In' : 'Sign Up';
             panelTitle.textContent = isSignUp ? 'Welcome Back!' : 'Hello, Striver!';
-            panelText.textContent = isSignUp 
+            panelText.textContent = isSignUp  
                 ? 'To keep connected with us please login with your personal info'
                 : 'Enter your details and begin your self-evaluation journey';
             
@@ -208,6 +220,7 @@
     
  
     if(signInForm){
+
         signInForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const email = signInForm.email.value;
@@ -283,16 +296,19 @@
     if (signUpForm) {
         signUpForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const role = signUpForm.role ? signUpForm.role.value : 'user';
+               
             const firstName = signUpForm.firstName.value;
             const lastName = signUpForm.lastName.value;
+            const designationAssigned = signUpForm.designation.value;
             const email = signUpForm.email.value;
+            const phoneNumber = signUpForm.value;
+            const aboutMe = signUpForm.value;
             const password = signUpForm.password.value;
             
             signUpError.textContent = '';
             
           
-            if (!firstName || !lastName || !email || !password) {
+            if (!firstName || !lastName || !email || !password || !phoneNumber || !designationAssigned) {
                 signUpError.textContent = 'Please fill in all fields.';
                 return;
             }
@@ -309,6 +325,7 @@
             
           
             const users = JSON.parse(localStorage.getItem('users')) || [];
+             
             if (users.some(user => user.email === email)) {
                 signUpError.textContent = 'Email already registered. Please sign in.';
                 return;
@@ -316,11 +333,13 @@
             
            
             const newUser = {
-                id: generateUserId(),
-                role,
+                // id: generateUserId()
                 firstName,
                 lastName,
+                designationAssigned,
                 email,
+                phoneNumber,
+                aboutMe,
                 password,
                 joinDate: new Date().toLocaleDateString()
             };
@@ -408,29 +427,30 @@
     });
 
  
-    document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetPage = this.getAttribute('data-page');
+    // document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+
+    //     link.addEventListener('click', function(e) {
+    //         e.preventDefault();
+    //         const targetPage = this.getAttribute('data-page');
             
            
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
+    //         document.querySelectorAll('.page').forEach(page => {
+    //             page.classList.remove('active');
+    //         });
             
             
-            const pageToShow = document.getElementById(`${targetPage}-page`);
-            if (pageToShow) {
-                pageToShow.classList.add('active');
-            }
+    //         const pageToShow = document.getElementById(`${targetPage}-page`);
+    //         if (pageToShow) {
+    //             pageToShow.classList.add('active');
+    //         }
             
            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            this.closest('.nav-item').classList.add('active');
-        });
-    });
+    //         document.querySelectorAll('.nav-item').forEach(item => {
+    //             item.classList.remove('active');
+    //         });
+    //         this.closest('.nav-item').classList.add('active');
+    //     });
+    // });
 
 
 
@@ -537,7 +557,7 @@ function generateUserId() {
     return 'u' + Math.random().toString(36).substring(2, 11);
 }
 
-function formatDate(date) {
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-}
+// function formatDate(date) {
+//     const options = { month: 'short', day: 'numeric', year: 'numeric' };
+//     return date.toLocaleDateString('en-US', options);
+// }
