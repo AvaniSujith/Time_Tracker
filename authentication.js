@@ -3,17 +3,17 @@
     const sidebar = document.querySelector('.sidebar-aside');
     const sidebarToggler = document.querySelector(".sidebar-toggler");
     const menuToggler = document.querySelector(".menu-toggler");
-    const signInForm = document.getElementById('signInForm');
-    const signUpForm = document.getElementById('signUpForm');
-    const toggleButton = document.getElementById('toggleButton');
-    const panelTitle = document.getElementById('panelTitle');
-    const panelText = document.getElementById('panelText');
-    const signInError = document.getElementById('signInError');
-    const signUpError = document.getElementById('signUpError');
-    const authSection = document.querySelector('.authentication');
+    const signInError = document.getElementById('signInError'); 
+    const signUpError = document.getElementById('signUpError'); 
+    const authSection = document.querySelector('.authentication'); 
     const mainContent = document.querySelector('main');
     const mainNav = document.querySelector('.main-nav');
     const loginPage = document.querySelector("#login-page")
+
+    
+    if (mainNav) mainNav.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
+    if (mainContent) mainContent.style.display = 'none';
 
     const editBtn = document.getElementById("editProfileBtn");
 
@@ -27,18 +27,17 @@
     //     });
     // }
 
+    // Initial setup is now handled by checkLoginState()
+    // if(mainNav && sidebar && loginPage) {
+    //     mainNav.style.display = "none";
+    //     sidebar.style.display = "none";
+    // }
 
-    if(mainNav && sidebar && loginPage){
-
-        mainNav.style.display = "none";
-        sidebar.style.display = "none";
-        
+    if (editBtn) {
+        editBtn.addEventListener("click", editForm);
     }
 
-    editBtn.addEventListener("click", editForm);
-
     function editForm(){
-        // console.log("btn clicked")
         let editingModal = document.createElement("div");
         editingModal.id = "editingModal"
         editingModal.classList.add("modal");
@@ -157,20 +156,35 @@
     //     sidebar.style.display = 'flex';
     //     mainNav.style.display = 'flex';
         
-    //     if(document.getElementById('profileName')){
-    //         document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
+    // This block is now integrated into checkLoginState and login/signup success
+    /*
+    // const currentUser = localStorage.getItem('currentUser');
+    // if (currentUser) {
+    //     const userData = JSON.parse(currentUser);
+        
+        
+    //     authSection.style.display = 'none';
+    //     mainContent.style.display = 'block';
+    //     sidebar.style.display = 'flex';
+    //     mainNav.style.display = 'flex';
+        
+    //     if(document.getElementById('username')){ // Was profileName
+    //         document.getElementById('username').textContent = userData.username; // Was firstName lastName
     //     }
 
-    //     if(document.getElementById('profileEmail')){
-    //         document.getElementById('profileEmail').textContent = userData.email;
+    //     if(document.getElementById('email')){ // Was profileEmail
+    //         document.getElementById('email').textContent = userData.email;
     //     } 
+    //     if(document.getElementById('designation')){ 
+    //         document.getElementById('designation').textContent = userData.designationAssigned;
+    //     }
 
-    //     if(document.getElementById('memberSince') && userData.joinDate){
-    //         document.getElementById('memberSince').textContent = `Member since: ${userData.joinDate}`;
+    //     if(document.getElementById('memberSinceContent') && userData.joinDate){ // Was memberSince
+    //         document.getElementById('memberSinceContent').textContent = userData.joinDate;
     //     }
         
         
-    //     loadUserTasks(userData.email);
+    //     if (typeof loadUserTasks === 'function') loadUserTasks(userData.email);
         
         
     //     if (typeof updateTaskTables === 'function') {
@@ -178,64 +192,39 @@
     //     }
     // } else {
        
-    //     authSection.style.display = 'flex';
-    //     mainContent.style.display = 'none';
-    //     sidebar.style.display = 'none';
-    //     mainNav.style.display = 'none';
+    //     if(loginPage) loginPage.style.display = 'flex'; // Was authSection
+    //     if(mainContent) mainContent.style.display = 'none';
+    //     if(sidebar) sidebar.style.display = 'none';
+    //     if(mainNav) mainNav.style.display = 'none';
     // }
-    
+    */
    
+    // The toggleButton logic seems to be from a different HTML structure.
+    // The current HTML uses authPage.js to toggle between sign-in and sign-up forms.
+    // So, we can remove or comment out this block.
+    /*
     if(toggleButton){
-        toggleButton.addEventListener('click', function() {
-            signInForm.classList.toggle('active');
-            signUpForm.classList.toggle('active');
-            
-            const isSignUp = signUpForm.classList.contains('active');
-            toggleButton.textContent = isSignUp ? 'Sign In' : 'Sign Up';
-            panelTitle.textContent = isSignUp ? 'Welcome Back!' : 'Hello, Striver!';
-            panelText.textContent = isSignUp  
-                ? 'To keep connected with us please login with your personal info'
-                : 'Enter your details and begin your self-evaluation journey';
-            
-            signInError.textContent = '';
-            signUpError.textContent = '';
-            
-          
-            const slidingPanel = document.querySelector('.sliding-panel');
-            if (slidingPanel) {
-                if (isSignUp) {
-                    slidingPanel.style.transform = 'translateX(-100%)';
-                    slidingPanel.style.borderRadius = '0 var(--border-radius) var(--border-radius) 0';
-                    slidingPanel.style.right = 'auto';
-                    slidingPanel.style.left = '0';
-                } else {
-                    slidingPanel.style.transform = 'translateX(0)';
-                    slidingPanel.style.borderRadius = 'var(--border-radius) 0 0 var(--border-radius)';
-                    slidingPanel.style.right = '0';
-                    slidingPanel.style.left = 'auto';
-                }
-            }
-        });
+        // ... old toggleButton logic
     }
-    
- 
-    if(signInForm){
+    */
 
-        signInForm.addEventListener('submit', function(e) {
+    const signInFormElement = document.getElementById('signInForm');
+    if(signInFormElement){
+        signInFormElement.addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = signInForm.email.value;
-            const password = signInForm.password.value;
+            const email = signInFormElement.email.value;
+            const password = signInFormElement.password.value;
             
-            signInError.textContent = '';
+            if (signInError) signInError.textContent = '';
             
         
             if (!email || !password) {
-                signInError.textContent = 'Please enter both email and password.';
+                if (signInError) signInError.textContent = 'Please enter both email and password.';
                 return;
             }
             
             if (!validateEmail(email)) {
-                signInError.textContent = 'Please enter a valid email address.';
+                if (signInError) signInError.textContent = 'Please enter a valid email address.';
                 return;
             }
             
@@ -247,79 +236,87 @@
                 
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 
+                if (signInError) {
+                    signInError.style.color = 'green';
+                    signInError.textContent = 'Login successful';
+                }
                 
-                signInError.style.color = 'green';
-                signInError.textContent = 'Login successful';
-                
-                
-                setTimeout(() => {
-                    authSection.style.display = 'none';
-                    mainNav.style.display = 'flex';
-                    sidebar.style.display = 'flex';
-                    mainContent.style.display = 'block';
-                    
-                   
-                    if (document.getElementById('profileName')) {
-                        document.getElementById('profileName').textContent = `${user.firstName} ${user.lastName}`;
-                    }
-                    if (document.getElementById('profileEmail')) {
-                        document.getElementById('profileEmail').textContent = user.email;
-                    }
-                    if (document.getElementById('memberSince')) {
-                        document.getElementById('memberSince').textContent = `Member since: ${user.joinDate}`;
-                    }
-                    
-                    
-                    loadUserTasks(user.email);
-                    
-                    
-                    updateStreak();
-                    
-                    
-                    if (typeof updateTaskTables === 'function') {
-                        updateTaskTables();
-                    }
-                }, 1500);
-            } else {
-                signInError.textContent = 'Invalid email or password.';
+                // UI updates moved out of setTimeout for immediate effect
+                if (loginPage) loginPage.style.display = 'none'; // Hide login page
+                if (mainNav) mainNav.style.display = 'flex';
+                if (sidebar) sidebar.style.display = 'flex';
+                if (mainContent) mainContent.style.display = 'block';
                 
                
-                signInForm.classList.add('shake');
+                if (document.getElementById('username')) { // Changed from profileName to username
+                    document.getElementById('username').textContent = user.username; // Display username
+                }
+                if (document.getElementById('email')) { // Assuming an element with id 'email' in profile
+                    document.getElementById('email').textContent = user.email;
+                }
+                 if (document.getElementById('designation')) { 
+                    document.getElementById('designation').textContent = user.designationAssigned;
+                }
+                if (document.getElementById('memberSinceContent')) { // Changed from memberSince
+                    document.getElementById('memberSinceContent').textContent = user.joinDate;
+                }
+                
+                // Ensure loadUserTasks and updateStreak are defined or handled
+                if (typeof loadUserTasks === 'function') loadUserTasks(user.email);
+                if (typeof updateStreak === 'function') updateStreak();
+                if (typeof updateTaskTables === 'function') updateTaskTables();
+
+                // Explicitly activate dashboard page
+                const dashboardPage = document.getElementById('dashboard-page');
+                if (dashboardPage) {
+                    document.querySelectorAll('main > .page').forEach(p => p.classList.remove('active'));
+                    dashboardPage.classList.add('active');
+                }
+                const dashboardLink = document.querySelector('.nav-link[data-page="dashboard"]');
+                if (dashboardLink) {
+                    document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
+                    dashboardLink.closest('.nav-item').classList.add('active');
+                }
+
+            } else {
+                if (signInError) signInError.textContent = 'Invalid email or password.';
+                
+               
+                signInFormElement.classList.add('shake');
                 setTimeout(() => {
-                    signInForm.classList.remove('shake');
+                    signInFormElement.classList.remove('shake');
                 }, 500);
             }
         });
     }
     
-   
-    if (signUpForm) {
-        signUpForm.addEventListener('submit', function(e) {
+    const signUpFormElement = document.getElementById('signUpForm');
+    if (signUpFormElement) {
+        signUpFormElement.addEventListener('submit', function(e) {
             e.preventDefault();
                
-            const firstName = signUpForm.firstName.value;
-            const lastName = signUpForm.lastName.value;
-            const designationAssigned = signUpForm.designation.value;
-            const email = signUpForm.email.value;
-            const phoneNumber = signUpForm.value;
-            const aboutMe = signUpForm.value;
-            const password = signUpForm.password.value;
+            const username = signUpFormElement.username.value; // Changed from firstName, lastName
+            const designationAssigned = signUpFormElement.designation.value;
+            const email = signUpFormElement.email.value;
+            const phoneNumber = signUpFormElement.phoneNumber.value; // Corrected from signUpForm.value
+            // const aboutMe = signUpForm.value; // aboutMe is not in the form per user's decision
+            const password = signUpFormElement.password.value;
             
-            signUpError.textContent = '';
+            if (signUpError) signUpError.textContent = '';
             
           
-            if (!firstName || !lastName || !email || !password || !phoneNumber || !designationAssigned) {
-                signUpError.textContent = 'Please fill in all fields.';
+            if (!username || !email || !password || !phoneNumber || !designationAssigned) { // Adjusted validation
+                if (signUpError) signUpError.textContent = 'Please fill in all fields.';
                 return;
             }
             
             if (!validateEmail(email)) {
-                signUpError.textContent = 'Please enter a valid email address.';
+                if (signUpError) signUpError.textContent = 'Please enter a valid email address.';
                 return;
             }
             
             if (password.length < 6) {
-                signUpError.textContent = 'Password must be at least 6 characters long.';
+                if (signUpError) signUpError.textContent = 'Password must be at least 6 characters long.';
                 return;
             }
             
@@ -327,19 +324,18 @@
             const users = JSON.parse(localStorage.getItem('users')) || [];
              
             if (users.some(user => user.email === email)) {
-                signUpError.textContent = 'Email already registered. Please sign in.';
+                if (signUpError) signUpError.textContent = 'Email already registered. Please sign in.';
                 return;
             }
             
            
             const newUser = {
-                // id: generateUserId()
-                firstName,
-                lastName,
+                // id: generateUserId(),
+                username, // Storing username
                 designationAssigned,
                 email,
                 phoneNumber,
-                aboutMe,
+                // aboutMe: '', // Set to empty or remove if not used
                 password,
                 joinDate: new Date().toLocaleDateString()
             };
@@ -350,60 +346,72 @@
             
          
             localStorage.setItem('currentUser', JSON.stringify(newUser));
-            localStorage.setItem('joinDate', newUser.joinDate);
+            // localStorage.setItem('joinDate', newUser.joinDate); // joinDate is part of newUser object
             
-        
-            signUpError.style.color = 'green'; 
-            signUpError.textContent = 'Account created successfully! Redirecting';
+            if (signUpError) {
+                signUpError.style.color = 'green'; 
+                signUpError.textContent = 'Account created successfully! Redirecting';
+            }
+          
+            // Ensure initializeUserTasks is defined or handled
+            if (typeof initializeUserTasks === 'function') initializeUserTasks(email);
             
           
-            initializeUserTasks(email);
+            // UI updates moved out of setTimeout for immediate effect
+            if (loginPage) loginPage.style.display = 'none'; // Hide login page
+            if (mainNav) mainNav.style.display = 'flex';
+            if (sidebar) sidebar.style.display = 'flex';
+            if (mainContent) mainContent.style.display = 'block';
             
-          
-            setTimeout(() => {
-                authSection.style.display = 'none';
-                mainNav.style.display = 'flex';
-                sidebar.style.display = 'flex';
-                mainContent.style.display = 'block';
-                
-               
-                if (document.getElementById('profileName')) {
-                    document.getElementById('profileName').textContent = `${firstName} ${lastName}`;
-                }
-                if (document.getElementById('profileEmail')) {
-                    document.getElementById('profileEmail').textContent = email;
-                }
-                if (document.getElementById('memberSince')) {
-                    document.getElementById('memberSince').textContent = `Member since: ${newUser.joinDate}`;
-                }
-                
-               
-                localStorage.setItem('streak', '1');
-                localStorage.setItem('lastLogin', new Date().toDateString());
-                if (document.getElementById('streak-days')) {
-                    document.getElementById('streak-days').textContent = 'Day 1';
-                }
-                
-               
-                if (typeof updateTaskTables === 'function') {
-                    updateTaskTables();
-                }
-            }, 1500);
+           
+            if (document.getElementById('username')) { // Changed from profileName
+                document.getElementById('username').textContent = username;
+            }
+            if (document.getElementById('email')) { // Assuming an element with id 'email' in profile
+                document.getElementById('email').textContent = email;
+            }
+             if (document.getElementById('designation')) { 
+                document.getElementById('designation').textContent = designationAssigned;
+            }
+            if (document.getElementById('memberSinceContent')) { // Changed from memberSince
+                document.getElementById('memberSinceContent').textContent = newUser.joinDate;
+            }
+            
+           
+            localStorage.setItem('streak', '1');
+            localStorage.setItem('lastLogin', new Date().toDateString());
+            if (document.getElementById('streak-days')) {
+                document.getElementById('streak-days').textContent = 'Day 1';
+            }
+            
+           
+            if (typeof updateTaskTables === 'function') updateTaskTables();
+
+            // Explicitly activate dashboard page
+            const dashboardPage = document.getElementById('dashboard-page');
+            if (dashboardPage) {
+                document.querySelectorAll('main > .page').forEach(p => p.classList.remove('active'));
+                dashboardPage.classList.add('active');
+            }
+            const dashboardLink = document.querySelector('.nav-link[data-page="dashboard"]');
+            if (dashboardLink) {
+                document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
+                dashboardLink.closest('.nav-item').classList.add('active');
+            }
+            
         });
     }
 
- 
-    const logoutBtn = document.querySelector('.nav-link[data-action="logout"]');
-    if (!logoutBtn) {
-        const logoutLinks = document.querySelectorAll('.nav-link');
-        logoutLinks.forEach(link => {
-            if (link.querySelector('.nav-label') && link.querySelector('.nav-label').textContent === 'Logout') {
+    // Simplified logout button selection
+    const logoutLinks = document.querySelectorAll('.nav-link .nav-label');
+    logoutLinks.forEach(label => {
+        if (label.textContent === 'Logout') {
+            const link = label.closest('.nav-link');
+            if (link) {
                 link.addEventListener('click', handleLogout);
             }
-        });
-    } else {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
+        }
+    });
     
    
     document.querySelectorAll('.modal .close').forEach(closeBtn => {
@@ -426,32 +434,35 @@
         });
     });
 
- 
-    // document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+// Event listener for page navigation using sidebar links
+document.querySelectorAll('.sidebar-nav .nav-link[data-page]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetPageId = this.getAttribute('data-page') + "-page"; // e.g., "dashboard-page"
+        
+        // Hide all pages
+        document.querySelectorAll('main > .page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        // Show the target page
+        const pageToShow = document.getElementById(targetPageId);
+        if (pageToShow) {
+            pageToShow.classList.add('active');
+        }
+        
+        // Update active state for nav items
+        document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        this.closest('.nav-item').classList.add('active');
 
-    //     link.addEventListener('click', function(e) {
-    //         e.preventDefault();
-    //         const targetPage = this.getAttribute('data-page');
-            
-           
-    //         document.querySelectorAll('.page').forEach(page => {
-    //             page.classList.remove('active');
-    //         });
-            
-            
-    //         const pageToShow = document.getElementById(`${targetPage}-page`);
-    //         if (pageToShow) {
-    //             pageToShow.classList.add('active');
-    //         }
-            
-           
-    //         document.querySelectorAll('.nav-item').forEach(item => {
-    //             item.classList.remove('active');
-    //         });
-    //         this.closest('.nav-item').classList.add('active');
-    //     });
-    // });
-
+        // Close menu on mobile if it's active after clicking a link
+        if (sidebar.classList.contains("menu-active")) {
+            toggleMenu(sidebar.classList.toggle("menu-active"));
+        }
+    });
+});
 
 
 function handleLogout(e) {
@@ -459,45 +470,44 @@ function handleLogout(e) {
     
     localStorage.removeItem('currentUser');
     
-    const authSection = document.querySelector('.authentication');
-    const mainNav = document.querySelector('.main-nav');
-    const sidebar = document.querySelector('.sidebar-aside');
-    const mainContent = document.querySelector('main');
+    // const authSection = document.querySelector('.authentication'); // Not used
+    const loginPageElement = document.getElementById('login-page'); // Use ID
+    const mainNavElement = document.querySelector('.main-nav');
+    const sidebarElement = document.querySelector('.sidebar-aside');
+    const mainContentElement = document.querySelector('main');
     
-    authSection.style.display = 'flex';
-    mainNav.style.display = 'none';
-    sidebar.style.display = 'none';
-    mainContent.style.display = 'none';
+    if (loginPageElement) loginPageElement.style.display = 'flex'; // Show login page
+    if (mainNavElement) mainNavElement.style.display = 'none';
+    if (sidebarElement) sidebarElement.style.display = 'none';
+    if (mainContentElement) mainContentElement.style.display = 'none'; // Hide main content area
     
-    const signInForm = document.getElementById('signInForm');
-    const signUpForm = document.getElementById('signUpForm');
-    const signInError = document.getElementById('signInError');
-    const signUpError = document.getElementById('signUpError');
-    const toggleButton = document.getElementById('toggleButton');
-    const panelTitle = document.getElementById('panelTitle');
-    const panelText = document.getElementById('panelText');
+    const currentSignInForm = document.getElementById('signInForm');
+    const currentSignUpForm = document.getElementById('signUpForm');
+    const currentSignInError = document.getElementById('signInError');
+    const currentSignUpError = document.getElementById('signUpError');
+    // const toggleButton = document.getElementById('toggleButton'); // Not used
+    // const panelTitle = document.getElementById('panelTitle'); // Not used
+    // const panelText = document.getElementById('panelText'); // Not used
     
-    if (signInForm) signInForm.reset();
-    if (signUpForm) signUpForm.reset();
-    if (signInError) signInError.textContent = '';
-    if (signUpError) signUpError.textContent = '';
+    if (currentSignInForm) currentSignInForm.reset();
+    if (currentSignUpForm) currentSignUpForm.reset();
+    if (currentSignInError) currentSignInError.textContent = '';
+    if (currentSignUpError) currentSignUpError.textContent = '';
     
+    // Reset to show Sign In form by default via authPage.js logic
+    // authPage.js should handle making signInForm active by default on load.
+    // We can call showLogin() from authPage.js if it's globally accessible,
+    // or rely on its DOMContentLoaded listener.
+    // Forcing it here might be redundant if authPage.js handles it.
+    // Let's assume authPage.js handles the default view.
 
-    if (signInForm) signInForm.classList.add('active');
-    if (signUpForm) signUpForm.classList.remove('active');
-    if (toggleButton) toggleButton.textContent = 'Sign Up';
-    if (panelTitle) panelTitle.textContent = 'Hello, Striver!';
-    if (panelText) panelText.textContent = 'Enter your details and begin your self-evaluation journey';
-    
-   
+    // The sliding panel logic is not in the current HTML structure.
+    /*
     const slidingPanel = document.querySelector('.sliding-panel');
     if (slidingPanel) {
-        slidingPanel.style.transform = 'translateX(0)';
-        slidingPanel.style.borderRadius = 'var(--border-radius) 0 0 var(--border-radius)';
-        slidingPanel.style.right = '0';
-        slidingPanel.style.left = 'auto';
+        // ... old sliding panel logic
     }
-    
+    */
  
     if (typeof pauseTimer === 'function') {
         pauseTimer();
@@ -561,3 +571,64 @@ function generateUserId() {
 //     const options = { month: 'short', day: 'numeric', year: 'numeric' };
 //     return date.toLocaleDateString('en-US', options);
 // }
+
+function checkLoginState() {
+    const currentUserData = localStorage.getItem('currentUser');
+    if (currentUserData) {
+        const user = JSON.parse(currentUserData);
+
+        if (loginPage) loginPage.style.display = 'none';
+        if (mainNav) mainNav.style.display = 'flex';
+        if (sidebar) sidebar.style.display = 'flex';
+        if (mainContent) mainContent.style.display = 'block';
+
+        // Populate profile information
+        if (document.getElementById('username')) {
+            document.getElementById('username').textContent = user.username || '';
+        }
+        if (document.getElementById('email')) {
+            document.getElementById('email').textContent = user.email || '';
+        }
+        if (document.getElementById('designation')) {
+            document.getElementById('designation').textContent = user.designationAssigned || '';
+        }
+        if (document.getElementById('memberSinceContent')) {
+            document.getElementById('memberSinceContent').textContent = user.joinDate || '';
+        }
+        // Add other profile fields if necessary, e.g., phone, about, birthDate from localStorage if stored
+        if (document.getElementById('birthDate') && user.birthDate) {
+             document.getElementById('birthDate').textContent = user.birthDate;
+        }
+         if (document.getElementById('aboutContent') && user.aboutMe) {
+             document.getElementById('aboutContent').textContent = user.aboutMe;
+        }
+
+
+        if (typeof loadUserTasks === 'function') loadUserTasks(user.email);
+        if (typeof updateStreak === 'function') updateStreak();
+        if (typeof updateTaskTables === 'function') updateTaskTables();
+         // By default, show the dashboard page if a user is logged in
+        const dashboardPage = document.getElementById('dashboard-page');
+        if (dashboardPage) {
+            // Hide all other pages first
+            document.querySelectorAll('main > .page').forEach(p => p.classList.remove('active'));
+            dashboardPage.classList.add('active');
+        }
+        // Set dashboard nav item to active
+        const dashboardLink = document.querySelector('.nav-link[data-page="dashboard"]');
+        if (dashboardLink) {
+            document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
+            dashboardLink.closest('.nav-item').classList.add('active');
+        }
+
+
+    } else {
+        if (loginPage) loginPage.style.display = 'flex';
+        if (mainNav) mainNav.style.display = 'none';
+        if (sidebar) sidebar.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'none';
+    }
+}
+
+// Call checkLoginState when the script is loaded
+document.addEventListener('DOMContentLoaded', checkLoginState);

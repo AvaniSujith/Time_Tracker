@@ -14,7 +14,7 @@ console.log("found")
 
  });
 }else{
-    console.log("not found")
+    console.log("not found");
 }
 
 const addNew = document.getElementById("addTaskBtn");
