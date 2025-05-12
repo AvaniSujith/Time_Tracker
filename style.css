@@ -1701,6 +1701,15 @@
     font-weight: 600;
   }
 
+  /* .graph-container{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    column-gap: 30px;
+    border: 1px solid brown;
+  } */
+
+
   @media screen and (max-width:1195px){
     /* .col-1{
       display: none;

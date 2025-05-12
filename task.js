@@ -2,14 +2,14 @@
 
 // console.log("JS is runing");
 
-const sidebar = document.querySelector('.sidebar-aside');
+const mainSidebar = document.querySelector('.sidebar-aside');
 const toggleBtn = document.querySelector(".toggler");
 
-// console.log("btn found", toggleBtn)
+console.log("btn found", toggleBtn)
 
 if(toggleBtn){
 toggleBtn.addEventListener("click", () => {
-//    sidebar.classList.toggle("collapse")
+   mainSidebar.classList.toggle("collapse")
 console.log("found")
 
  });
@@ -40,7 +40,6 @@ const endTimerBtn = document.getElementById("endTimerBtn");
 
 const navLinks = document.querySelectorAll('.nav-link[data-page]');
 const pages = document.querySelectorAll('.page');
-const applyFilterBtn = document.getElementById('applyFiltersBtn');
 
 
 let timer = null;
@@ -579,7 +578,6 @@ function renderPausedTaskTable(){
                 <button class="action-btn more-btn" onclick="showDetailsModal('${task.id}')">More</button>
             </td>  
         `;
-
         pausedTableBody.appendChild(row);
     });
 }
@@ -1246,4 +1244,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', initApp);
 document.addEventListener('DOMContentLoaded', initApp);
