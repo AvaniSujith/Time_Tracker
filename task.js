@@ -799,8 +799,7 @@ function showDetailsModal(taskId){
         
         taskDetailsModal.style.display = "flex";
     }
-}
-
+};
 
 function editTask(taskId) {
     

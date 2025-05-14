@@ -1,6 +1,11 @@
 const applyFilterBtn = document.getElementById('applyFiltersBtn');
+console.log("Found")
 
-applyFilterBtn.addEventListener("click", filteration);
+applyFilterBtn.addEventListener("click", () => {
+    console.log("clicked")
+    filteration();
+}
+    );
 
 
 function filteration(){
@@ -28,9 +33,7 @@ function filteration(){
         const checkTag = !tag || task.tag.toUpperCase().includes(tag);
         const checkPriority = !priority || task.priority === priority;
         const checkStatus = !status || task.status === status;
-        // const checkStartDate = !startDate || (task.startDate >= startDate && task.endDate <= endDate);
         const checkDate = (!startDate || task.startDate >= startDate) && (!endDate || task.endDate <= endDate);
-        // const checkEndDate = !endDate || (task.endDate >= startDate && task.endDate <= endDate);
 
         return checkName && checkTag && checkPriority && checkStatus && checkDate;
         
@@ -38,7 +41,7 @@ function filteration(){
 
     const tbody = document.getElementById("searchResultsTableBody");
     tbody.innerHTML = "";
-
+ 
     if(filteredTasks.length === 0){
         tbody.innerHTML = "<tr><td colspan='9'>No tasks</td><tr>";
         return;
@@ -57,7 +60,6 @@ function filteration(){
         `;
 
         tbody.appendChild(row);
-
     });
 }
 

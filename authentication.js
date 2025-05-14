@@ -8,7 +8,8 @@
     const authSection = document.querySelector('.authentication'); 
     const mainContent = document.querySelector('main');
     const mainNav = document.querySelector('.main-nav');
-    const loginPage = document.querySelector("#login-page")
+    const loginPage = document.querySelector("#login-page");
+    const submitBtn = document.querySelector('#submission');
 
     
     if (mainNav) mainNav.style.display = 'none';
@@ -21,29 +22,128 @@
     
     const modals = document.querySelectorAll('.modal');
 
-    // if(toggleBtn){
-    //     toggleBtn.addEventListener("click", () => {
-    //         sidebar.classList.toggle("collapse");
-    //     });
-    // }
+    editBtn.addEventListener("click", editForm);
+    
+    // submitBtn.addEventListener("click", updateDetail)
 
-    // Initial setup is now handled by checkLoginState()
-    // if(mainNav && sidebar && loginPage) {
-    //     mainNav.style.display = "none";
-    //     sidebar.style.display = "none";
-    // }
+    function updateDetail(){
 
-    if (editBtn) {
-        editBtn.addEventListener("click", editForm);
+        const userName = document.getElementById("username");
+        const designation = document.getElementById("designation");
+        const email = document.getElementById("email");
+        const dateOfBirth = document.getElementById("birthDate");
+        const about = document.getElementById("aboutContent");
+
+        const linkedIn = document.getElementById("linkedIn-id");
+        const github = document.getElementById("github-id");
+        const hackerRank = document.getElementById("hackerRank-id");
+
+        const userNameInput = document.getElementById("userName");
+        const designationInput = document.getElementById("designationValue");
+        const emailInput = document.getElementById("emailValue");
+        const dateOfBirthInput = document.getElementById("dateOfBirthValue");
+        const aboutInput = document.getElementById("about-me");
+        const githubInput = document.getElementById("githubProfile");
+        const linkedInInput = document.getElementById("linkedInProfile");
+        const hackerRankInput = document.getElementById("hackerRankProfile");
+    
+
+        // if(!userName || userName.value !== userNameInput.value){
+        //     userName.value = userNameInput.value;
+        // }
+
+        if(userName && userNameInput){
+            userName.textContent = userNameInput.value;
+        }
+
+        // if(!designation || designation.value !== designationInput.value){
+        //     designation.value = designationInput.value;
+        // }
+
+        if(designation && designationInput){
+            designation.textContent = designationInput.value;
+        }
+
+        // if(!email || email.value !== emailInput.value){
+        //     userName.value = userNameInput.value;
+        // }
+
+        if(email && emailInput){
+            email.textContent = emailInput.value;
+        }
+
+        // if(!dateOfBirth || dateOfBirth.value !== dateOfBirthInput.value){
+        //     dateOfBirth.value = dateOfBirthInput.value;
+        // }
+
+        if(dateOfBirth && dateOfBirthInput){
+            dateOfBirth.textContent = dateOfBirthInput.value;
+        }
+
+        // if(!about || about.value !== aboutInput.value){
+        //     about.value = aboutInput.value;
+        // }
+
+        if(about && aboutInput){
+            about.textContent = aboutInput.value;
+        }
+
+        // if(!linkedIn || linkedIn.value !== linkedInInput.value){
+        //     linkedIn.value = linkedInInput.value;
+        // }
+
+        if(linkedIn && linkedInInput){
+            linkedIn.textContent = linkedInInput.value
+        }
+
+        // if(!github || github.value !== githubInput.value){
+        //     userName.value = userNameInput.value;
+        // }
+
+        if(github && githubInput){
+            github.textContent = userNameInput.value;
+        }
+
+        // if(!hackerRank || hackerRank.value !== hackerRankInput.value){
+        //     hackerRank.value = hackerRankInput.value;
+        // }
+
+        if(hackerRank && hackerRankInput){
+            hackerRank.textContent = hackerRankInput.value;
+        }
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+
+        if (userNameInput) currentUser.username = userNameInput.value;
+        if (designationInput) currentUser.designationAssigned = designationInput.value;
+        if (emailInput) currentUser.email = emailInput.value;
+        if (dateOfBirthInput) currentUser.birthDate = dateOfBirthInput.value;
+        if (aboutInput) currentUser.aboutMe = aboutInput.value;
+        if (linkedInInput) currentUser.linkedIn = linkedInInput.value;
+        if (githubInput) currentUser.github = githubInput.value;
+        if (hackerRankInput) currentUser.hackerRank = hackerRankInput.value;
+
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        const editingModal = document.getElementById("editingModal");
+
+        if(editingModal){
+            editingModal.style.display = "none";
+        }
+
     }
 
     function editForm(){
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {}
+
         let editingModal = document.createElement("div");
         editingModal.id = "editingModal"
         editingModal.classList.add("modal");
 
         editingModal.innerHTML =`
-        <div class="modal-content">
+
+        <div class="modal-content">  
 
             <span class="close">&times;</span>
             
@@ -52,39 +152,30 @@
                 <div class="personal-detail">
 
                     <div class="profile-first-name details">
-                        <label for="firstName">First name</label>
-                        <input type="text">
-                    </div>
-
-                    <div class="profile-last-name details">
-                        <label for="lastName">Last name</label>
-                        <input type="text">
+                        <label for="UserName">Username</label>
+                        <input type="text" id="userName" value="${currentUser.username || ''}">
                     </div>
 
                     <div class="profile-designation details">
                         <label for="designation">Designation</label>
-                        <input type="text">
+                        <input type="text" id="designationValue" value="${currentUser.designationAssigned || ''}">
                     </div>
 
                     <div class="profile-email details">
                         <label for="profileEmail">Email</label>
-                        <input type="email">
+                        <input type="email" id="emailValue" value="${currentUser.email || ''}">
                     </div>
 
                     <div class="profile-dob details">
                         <label for="dateOfBirth">Date of Birth</label>
-                        <input type="date">
-                    </div>
-
-                    <div class="profile-phone details">
-                        <label for="profilePhone">Phone</label>
-                        <input type="phone">
+                        <input type="date" id="dateOfBirthValue" value="${currentUser.birthDate || ''}">
                     </div>
 
                     <div class="details-about details">
                         <label for="about">About</label>
-                        <textarea id="about-me"></textarea>
-                    </div>
+                        <textarea id="about-me">${currentUser.aboutMe || ''}</textarea>
+                    </div> 
+
                 </div>
                
                 <div class="account-details">
@@ -92,21 +183,21 @@
                         <label for="github">
                             <i class="fab fa-github"></i>
                         </label>
-                        <input type="url" id="githubProfile">
+                        <input type="url" id="githubProfile" value="${currentUser.github || ''}">
                     </div>
 
                     <div class="acc-details">
                         <label for="linkedIn">
                             <i class="fa-brands fa-linkedin"></i>
                         </label>
-                        <input type="url" id="linkedInProfile">
+                        <input type="url" id="linkedInProfile" value="${currentUser.linkedIn || ''}">
                     </div>
 
                     <div class="acc-details">
                         <label for="leetcode">
                             <i class="fab fa-hackerrank"></i>
                         </label>
-                        <input type="url" id="fa-hackerRankProfile">
+                        <input type="url" id="hackerRankProfile" value="${currentUser.hackerRank || ''}">
                     </div>
                 </div> 
 
@@ -122,6 +213,12 @@
         editingModal.querySelector(".close").addEventListener("click", () => {
             editingModal.style.display = "none";
         });
+
+        const submitBtn = editingModal.querySelector('#submission');
+
+        if(submitBtn){
+            submitBtn.addEventListener("click", updateDetail);
+        }
 
         editingModal.style.display = "flex";
     }
@@ -140,74 +237,12 @@
 
     menuToggler.addEventListener("click", () => {
         toggleMenu(sidebar.classList.toggle("menu-active"));
-    });
+    }); 
 
     modals.forEach(modal => {
         modal.style.display ='none';
     });
   
-    // const currentUser = localStorage.getItem('currentUser');
-    // if (currentUser) {
-    //     const userData = JSON.parse(currentUser);
-        
-        
-    //     authSection.style.display = 'none';
-    //     mainContent.style.display = 'block';
-    //     sidebar.style.display = 'flex';
-    //     mainNav.style.display = 'flex';
-        
-    // This block is now integrated into checkLoginState and login/signup success
-    /*
-    // const currentUser = localStorage.getItem('currentUser');
-    // if (currentUser) {
-    //     const userData = JSON.parse(currentUser);
-        
-        
-    //     authSection.style.display = 'none';
-    //     mainContent.style.display = 'block';
-    //     sidebar.style.display = 'flex';
-    //     mainNav.style.display = 'flex';
-        
-    //     if(document.getElementById('username')){ // Was profileName
-    //         document.getElementById('username').textContent = userData.username; // Was firstName lastName
-    //     }
-
-    //     if(document.getElementById('email')){ // Was profileEmail
-    //         document.getElementById('email').textContent = userData.email;
-    //     } 
-    //     if(document.getElementById('designation')){ 
-    //         document.getElementById('designation').textContent = userData.designationAssigned;
-    //     }
-
-    //     if(document.getElementById('memberSinceContent') && userData.joinDate){ // Was memberSince
-    //         document.getElementById('memberSinceContent').textContent = userData.joinDate;
-    //     }
-        
-        
-    //     if (typeof loadUserTasks === 'function') loadUserTasks(userData.email);
-        
-        
-    //     if (typeof updateTaskTables === 'function') {
-    //         updateTaskTables();
-    //     }
-    // } else {
-       
-    //     if(loginPage) loginPage.style.display = 'flex'; // Was authSection
-    //     if(mainContent) mainContent.style.display = 'none';
-    //     if(sidebar) sidebar.style.display = 'none';
-    //     if(mainNav) mainNav.style.display = 'none';
-    // }
-    */
-   
-    // The toggleButton logic seems to be from a different HTML structure.
-    // The current HTML uses authPage.js to toggle between sign-in and sign-up forms.
-    // So, we can remove or comment out this block.
-    /*
-    if(toggleButton){
-        // ... old toggleButton logic
-    }
-    */
-
     const signInFormElement = document.getElementById('signInForm');
     if(signInFormElement){
         signInFormElement.addEventListener('submit', function(e) {
@@ -241,14 +276,13 @@
                     signInError.textContent = 'Login successful';
                 }
                 
-                // UI updates moved out of setTimeout for immediate effect
-                if (loginPage) loginPage.style.display = 'none'; // Hide login page
+                if (loginPage) loginPage.style.display = 'none'; 
                 if (mainNav) mainNav.style.display = 'flex';
                 if (sidebar) sidebar.style.display = 'flex';
                 if (mainContent) mainContent.style.display = 'block';
                 
                
-                if (document.getElementById('username')) { // Changed from profileName to username
+                if (document.getElementById('username')) { 
                     document.getElementById('username').textContent = user.username; // Display username
                 }
                 if (document.getElementById('email')) { // Assuming an element with id 'email' in profile
@@ -434,30 +468,25 @@
         });
     });
 
-// Event listener for page navigation using sidebar links
 document.querySelectorAll('.sidebar-nav .nav-link[data-page]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
-        const targetPageId = this.getAttribute('data-page') + "-page"; // e.g., "dashboard-page"
+        const targetPageId = this.getAttribute('data-page') + "-page";
         
-        // Hide all pages
         document.querySelectorAll('main > .page').forEach(page => {
             page.classList.remove('active');
         });
         
-        // Show the target page
         const pageToShow = document.getElementById(targetPageId);
         if (pageToShow) {
             pageToShow.classList.add('active');
         }
         
-        // Update active state for nav items
         document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
             item.classList.remove('active');
         });
         this.closest('.nav-item').classList.add('active');
 
-        // Close menu on mobile if it's active after clicking a link
         if (sidebar.classList.contains("menu-active")) {
             toggleMenu(sidebar.classList.toggle("menu-active"));
         }
@@ -470,45 +499,26 @@ function handleLogout(e) {
     
     localStorage.removeItem('currentUser');
     
-    // const authSection = document.querySelector('.authentication'); // Not used
-    const loginPageElement = document.getElementById('login-page'); // Use ID
+    const loginPageElement = document.getElementById('login-page'); 
     const mainNavElement = document.querySelector('.main-nav');
     const sidebarElement = document.querySelector('.sidebar-aside');
     const mainContentElement = document.querySelector('main');
     
-    if (loginPageElement) loginPageElement.style.display = 'flex'; // Show login page
+    if (loginPageElement) loginPageElement.style.display = 'flex'; 
     if (mainNavElement) mainNavElement.style.display = 'none';
     if (sidebarElement) sidebarElement.style.display = 'none';
-    if (mainContentElement) mainContentElement.style.display = 'none'; // Hide main content area
+    if (mainContentElement) mainContentElement.style.display = 'none'; 
     
     const currentSignInForm = document.getElementById('signInForm');
     const currentSignUpForm = document.getElementById('signUpForm');
     const currentSignInError = document.getElementById('signInError');
     const currentSignUpError = document.getElementById('signUpError');
-    // const toggleButton = document.getElementById('toggleButton'); // Not used
-    // const panelTitle = document.getElementById('panelTitle'); // Not used
-    // const panelText = document.getElementById('panelText'); // Not used
     
     if (currentSignInForm) currentSignInForm.reset();
     if (currentSignUpForm) currentSignUpForm.reset();
     if (currentSignInError) currentSignInError.textContent = '';
     if (currentSignUpError) currentSignUpError.textContent = '';
-    
-    // Reset to show Sign In form by default via authPage.js logic
-    // authPage.js should handle making signInForm active by default on load.
-    // We can call showLogin() from authPage.js if it's globally accessible,
-    // or rely on its DOMContentLoaded listener.
-    // Forcing it here might be redundant if authPage.js handles it.
-    // Let's assume authPage.js handles the default view.
-
-    // The sliding panel logic is not in the current HTML structure.
-    /*
-    const slidingPanel = document.querySelector('.sliding-panel');
-    if (slidingPanel) {
-        // ... old sliding panel logic
-    }
-    */
- 
+   
     if (typeof pauseTimer === 'function') {
         pauseTimer();
         currentTaskId = null;
@@ -519,6 +529,7 @@ function handleLogout(e) {
 function updateStreak() {
    
     let streak = parseInt(localStorage.getItem('streak') || '0');
+
     const lastLogin = localStorage.getItem('lastLogin');
     const today = new Date().toDateString();
     
@@ -567,11 +578,6 @@ function generateUserId() {
     return 'u' + Math.random().toString(36).substring(2, 11);
 }
 
-// function formatDate(date) {
-//     const options = { month: 'short', day: 'numeric', year: 'numeric' };
-//     return date.toLocaleDateString('en-US', options);
-// }
-
 function checkLoginState() {
     const currentUserData = localStorage.getItem('currentUser');
     if (currentUserData) {
@@ -579,10 +585,10 @@ function checkLoginState() {
 
         if (loginPage) loginPage.style.display = 'none';
         if (mainNav) mainNav.style.display = 'flex';
-        if (sidebar) sidebar.style.display = 'flex';
+        if (sidebar) sidebar.style.display = 'block';
         if (mainContent) mainContent.style.display = 'block';
 
-        // Populate profile information
+        
         if (document.getElementById('username')) {
             document.getElementById('username').textContent = user.username || '';
         }
@@ -595,7 +601,7 @@ function checkLoginState() {
         if (document.getElementById('memberSinceContent')) {
             document.getElementById('memberSinceContent').textContent = user.joinDate || '';
         }
-        // Add other profile fields if necessary, e.g., phone, about, birthDate from localStorage if stored
+        
         if (document.getElementById('birthDate') && user.birthDate) {
              document.getElementById('birthDate').textContent = user.birthDate;
         }
@@ -607,14 +613,14 @@ function checkLoginState() {
         if (typeof loadUserTasks === 'function') loadUserTasks(user.email);
         if (typeof updateStreak === 'function') updateStreak();
         if (typeof updateTaskTables === 'function') updateTaskTables();
-         // By default, show the dashboard page if a user is logged in
+        
         const dashboardPage = document.getElementById('dashboard-page');
         if (dashboardPage) {
-            // Hide all other pages first
+           
             document.querySelectorAll('main > .page').forEach(p => p.classList.remove('active'));
             dashboardPage.classList.add('active');
         }
-        // Set dashboard nav item to active
+        
         const dashboardLink = document.querySelector('.nav-link[data-page="dashboard"]');
         if (dashboardLink) {
             document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
@@ -630,5 +636,4 @@ function checkLoginState() {
     }
 }
 
-// Call checkLoginState when the script is loaded
 document.addEventListener('DOMContentLoaded', checkLoginState);

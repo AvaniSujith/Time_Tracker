@@ -522,7 +522,11 @@
   .task-overview {
     display: flex;
     flex-direction: column;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+  }
+
+  .task-overview-smaller-screen{
+    display: none;
   }
   
   .total-time-card {
@@ -569,9 +573,15 @@
     /* top: 0; */
     /* left: 110px; */
     /* position: absolute; */
-    display: grid;
+    /* display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 20px; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding-right: 20px;
   }
   
   .task.card {
@@ -615,16 +625,18 @@
   .active-task-panel {
     display: flex;
     align-items: stretch;
-    background-color: #FDFCFC;
     border-radius: 8px;
-    box-shadow:  0 4px 6px rgba(0, 0, 0, 0.1);
+    /* box-shadow:  0 4px 6px rgba(0, 0, 0, 0.1); */
     margin-bottom: 30px;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
   
   .active-task-details {
     flex: 1;
+    background-color: #FDFCFC;
     padding: 20px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px ;
   }
   
   .active-task-details h2 {
@@ -1701,6 +1713,10 @@
     font-weight: 600;
   }
 
+  .day-x{
+    text-align: center;
+  }
+
   /* .graph-container{
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -1777,6 +1793,20 @@
 
   @media screen and (max-width: 768px){
 
+    .task-overview-smaller-screen{
+      display: flex;
+      margin-bottom: 20px;
+      /* gap: 15px; */
+    }
+
+    .task-overview-large-screen{
+      display: none;
+    }
+
+    .sidebar-aside.collapse ~ main .page {
+      margin-left: 0px;
+    }
+
     .form-container{
       max-width: 660px;
     }
@@ -1834,7 +1864,7 @@
       opacity: 1;
     }
   
-    .sidebar-aside.sidebar-aside.collapse{
+    .sidebar-aside.collapse{
       width: 100%;
     }
 
@@ -1905,7 +1935,9 @@
     }
 
     .task-cards {
-      grid-template-columns: 1fr;
+      /* grid-template-columns: 1fr; */
+      gap: 15px;
+      padding-right: 0px;
       position: unset;
     }
     
