@@ -23,8 +23,6 @@
     const modals = document.querySelectorAll('.modal');
 
     editBtn.addEventListener("click", editForm);
-    
-    // submitBtn.addEventListener("click", updateDetail)
 
     function updateDetail(){
 
@@ -46,67 +44,34 @@
         const githubInput = document.getElementById("githubProfile");
         const linkedInInput = document.getElementById("linkedInProfile");
         const hackerRankInput = document.getElementById("hackerRankProfile");
-    
-
-        // if(!userName || userName.value !== userNameInput.value){
-        //     userName.value = userNameInput.value;
-        // }
 
         if(userName && userNameInput){
             userName.textContent = userNameInput.value;
         }
 
-        // if(!designation || designation.value !== designationInput.value){
-        //     designation.value = designationInput.value;
-        // }
-
         if(designation && designationInput){
             designation.textContent = designationInput.value;
         }
-
-        // if(!email || email.value !== emailInput.value){
-        //     userName.value = userNameInput.value;
-        // }
 
         if(email && emailInput){
             email.textContent = emailInput.value;
         }
 
-        // if(!dateOfBirth || dateOfBirth.value !== dateOfBirthInput.value){
-        //     dateOfBirth.value = dateOfBirthInput.value;
-        // }
-
         if(dateOfBirth && dateOfBirthInput){
             dateOfBirth.textContent = dateOfBirthInput.value;
         }
-
-        // if(!about || about.value !== aboutInput.value){
-        //     about.value = aboutInput.value;
-        // }
 
         if(about && aboutInput){
             about.textContent = aboutInput.value;
         }
 
-        // if(!linkedIn || linkedIn.value !== linkedInInput.value){
-        //     linkedIn.value = linkedInInput.value;
-        // }
-
         if(linkedIn && linkedInInput){
             linkedIn.textContent = linkedInInput.value
         }
 
-        // if(!github || github.value !== githubInput.value){
-        //     userName.value = userNameInput.value;
-        // }
-
         if(github && githubInput){
-            github.textContent = userNameInput.value;
+            github.textContent = githubInput.value;
         }
-
-        // if(!hackerRank || hackerRank.value !== hackerRankInput.value){
-        //     hackerRank.value = hackerRankInput.value;
-        // }
 
         if(hackerRank && hackerRankInput){
             hackerRank.textContent = hackerRankInput.value;
@@ -177,7 +142,7 @@
                     </div> 
 
                 </div>
-               
+                
                 <div class="account-details">
                     <div class="acc-details">
                         <label for="github">
@@ -283,9 +248,9 @@
                 
                
                 if (document.getElementById('username')) { 
-                    document.getElementById('username').textContent = user.username; // Display username
+                    document.getElementById('username').textContent = user.username; 
                 }
-                if (document.getElementById('email')) { // Assuming an element with id 'email' in profile
+                if (document.getElementById('email')) { 
                     document.getElementById('email').textContent = user.email;
                 }
                  if (document.getElementById('designation')) { 
@@ -598,15 +563,29 @@ function checkLoginState() {
         if (document.getElementById('designation')) {
             document.getElementById('designation').textContent = user.designationAssigned || '';
         }
-        if (document.getElementById('memberSinceContent')) {
-            document.getElementById('memberSinceContent').textContent = user.joinDate || '';
-        }
+
+        // if (document.getElementById('memberSinceContent')) {
+        //     document.getElementById('memberSinceContent').textContent = user.joinDate || '';
+        // }
         
         if (document.getElementById('birthDate') && user.birthDate) {
-             document.getElementById('birthDate').textContent = user.birthDate;
+            document.getElementById('birthDate').textContent = user.birthDate;
         }
-         if (document.getElementById('aboutContent') && user.aboutMe) {
-             document.getElementById('aboutContent').textContent = user.aboutMe;
+        
+        if (document.getElementById('aboutContent') && user.aboutMe) {
+            document.getElementById('aboutContent').textContent = user.aboutMe;
+        }
+
+        if (document.getElementById('linkedIn-id')) {
+            document.getElementById('linkedIn-id').textContent = user.linkedIn || 'Not specified';
+        }
+
+        if (document.getElementById('github-id')) {
+            document.getElementById('github-id').textContent = user.github || 'Not specified';
+        }
+
+        if (document.getElementById('hackerRank-id')) {
+            document.getElementById('hackerRank-id').textContent = user.hackerRank || 'Not specified';
         }
 
 

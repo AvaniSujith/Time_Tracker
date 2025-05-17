@@ -138,6 +138,19 @@
 //         }
 //     }
 // }
-
-
  
+
+function createGraph(){
+
+const gridContainer = document.querySelector(".analytics-container");
+const analyticsContainer = document.querySelector('.analytics-container');
+
+analyticsContainer.innerHTML = `
+    <h3>Glimpse of Your Productivity</h3>
+    <div id="graphContainer" class="graph-block">
+`;
+
+gridContainer.appendChild(analyticsContainer);
+    
+
+}

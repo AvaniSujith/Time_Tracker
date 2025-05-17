@@ -94,7 +94,7 @@ export function pauseCurrentTask(){
         localStorage.removeItem("activeTaskId");
         clearOngoingTaskDisplay();
 
-        updateTaskCounters();
+        updateTaskCounters();    
         renderPausedTaskTable();
     }
 }

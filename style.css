@@ -1365,6 +1365,17 @@
 
   .profile-details{
     width: 65%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #FDFCFC;
+    padding: 30px;
+  }
+
+  .label-placeholder{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    font-size: 20px;
+    font-weight: 600;
   }
 
   .profile-details > div{
@@ -1716,14 +1727,6 @@
   .day-x{
     text-align: center;
   }
-
-  /* .graph-container{
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(15, 1fr);
-    column-gap: 30px;
-    border: 1px solid brown;
-  } */
 
 
   @media screen and (max-width:1195px){
