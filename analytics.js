@@ -138,19 +138,162 @@
 //         }
 //     }
 // }
- 
 
-function createGraph(){
+const GRAPH_SETTINGS = {
+    timeUnit: "hours",
+    period: "1week",
+};
 
-const gridContainer = document.querySelector(".analytics-container");
-const analyticsContainer = document.querySelector('.analytics-container');
+export const createGraph = (graphContainer) => {
 
-analyticsContainer.innerHTML = `
-    <h3>Glimpse of Your Productivity</h3>
-    <div id="graphContainer" class="graph-block">
-`;
+    const container = document.getElementById("graphContainer");
+    if(!container) return;
 
-gridContainer.appendChild(analyticsContainer);
+    const wrapper = document.createElement("div");
+    wrapper.className = "analytics-wrapper";
+
+    const controls = buildControls();
+    const graph = document.createElement("div");
+    graph.className = "analytics-graph"
+
+    wrapper.appendChild(controls);
+    wrapper.appendChild(graph);
+    container.innerHTML = "";
+    container.appendChild(wrapper);
+
+    bindGraphEvents(controls, graph);
+    renderGraph(graph);
+};
+
+const buildControls = () => {
+    const controlPanel = document.createElement("div");
+    controlPanel.className = "graph-controls";
+
+    controlPanel.innerHTML = `
+        <label>Period:
+            <select id="period-select">
+                <option value="1week">1 Week</option>
+                <option value="2week">2 Week</option>
+                <option value="1month">1 Month</option>
+                <option value="6month">6 Month</option>
+                <option value="1year">1 Year</option>
+            </select>
+        </label>
+        <label>Unit:
+            <select id="unit-select">
+                <option value="hours">Hours</option>
+                <option value="minutes">Minutes</option>
+            </select>
+        </label>
+    `;
+
+    return controlPanel;
+};
+
+const bindGraphEvents = (controls, graph) => {
+    controls.querySelector('#period-select').addEventListener("change", (e) => {
+        GRAPH_SETTINGS.period = e.target.value;
+        renderGraph(graph);
+    });
+    controls.querySelector('#unit-select').addEventListener("change", (e) => {
+        GRAPH_SETTINGS.timeUnit = e.target.value;
+        renderGraph(graph);
+    });
+};
+
+const renderGraph = (graph) => {
+    graph.innerHTML = "";
+
+    const data = fetchLocalStorageDate();
+    const filtered  = filterDataByPeriod(data, GRAPH_SETTINGS.period);
+
+    const maxTime = getMaxTime(filtered);
+    const normalizedMax = normalizeMaxTime(maxTime, GRAPH_SETTINGS.timeUnit);
     
+    const yLabels = generateYAxisLabels(normalizedMax, GRAPH_SETTINGS.timeUnit);
+    const xLabels = filtered.map(d => formatDate(d.date));
 
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = `auto repeat(${xLabels.length}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${yLabels.length}, 1fr) auto`;
+
+    yLabels.slice().reverse().forEach(label => {
+        const yCell = document.createElement("div");
+        yCell.className = "cell y-label";
+        yCell.textContent = label;
+        grid.appendChild(yCell);
+    });
+
+    filtered.forEach((entry, colIndex) => {
+        const timeVal = GRAPH_SETTINGS.timeUnit === "hours" ? entry.hours : entry.minutes;
+
+        yLabels.slice().reverse().forEach(label => {
+            const threshold = labelToMinutes(label, GRAPH_SETTINGS.timeUnit);
+            const bar = document.createElement("div");
+            bar.className = "cell graph-cell";
+
+            if(timeVal >= threshold){
+                bar.style.backgroundColor = "#4CAF50";
+            }
+
+            grid.appendChild(bar);
+        });
+    });
+
+    const empty = document.createElement("div");
+    empty.className = "cell x-label";
+    grid.appendChild(empty);
+
+    xLabels.forEach(label => {
+        const xCell = document.createElement("div");
+        xCell.className = "cell x-label";
+        xCell.textContent = label;
+        grid.appendChild(xCell);
+    });
+
+    graph.appendChild(grid);
+};
+
+const fetchLocalStorageDate = () => {
+    const raw = localStorage.getItem("taskData");
+    if(!raw) return [];
+
+    let tasks;
+    try{
+        tasks = JSON.parse(raw);
+
+    }catch{
+        return [];
+    }
+
+    const dateMap = new Map();
+
+    for(const task of tasks){
+        if(!task.timeFragments || !Array.isArray(task.timeFragments)) continue;
+
+        for(const fragment of task.timeFragments){
+            const date = fragment.date;
+            const duration = parseDurationToMinutes(fragment.duration);
+
+            if(!dateMap.has(date)){
+                dateMap.set(date, 0)
+            }
+            dateMap.set(date, dateMap.get(date) + duration);
+        }
+    }
+
+    return Array.from(dateMap.entries()).map(([date, totalMinutes]) => ({
+        date,
+        minutes: totalMinutes,
+        hours: +(totalMinutes / 60).toFixed(2)
+    }));
+};
+
+const parseDurationToMinutes = (durationStr) => {
+    const parts = durationStr.split(":").map(Number);
+    const [hh, mm, ss] = parts;
+    return hh * 60 + mm + ss / 60;
 }
+
