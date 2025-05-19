@@ -1,143 +1,4 @@
 
-// function createGraph(startDate){
-//     const grid = document.getElementById("gridBlock");
-//     grid.innerHTML = "";
-
-//     grid.style.display = "grid";
-//     grid.style.gridTemplateColumns = `50px repeat(7, 1fr)`;
-//     // grid.style.columnGap = '30px';
-//     grid.style.gridTemplateRows = `40px repeat(15, 45px)`;
-
-//     grid.appendChild(document.createElement("div"));
-
-//     const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-// //     for(let i = 0; i <dayNames.length; i++){
-// //         const day = document.createElement("div");
-// //         day.classList.add("day-x")
-// //         day.textContent = dayNames[i];
-// //         grid.appendChild(day);
-// //     }
-
-// //     for(let hour = 12; hour >= 1; hour --){ 
-// //         const hourLabel = document.createElement("div");
-// //         hourLabel.classList.add("hour-y")
-// //         hourLabel.textContent = `${hour}hr`;
-// //         grid.appendChild(hourLabel);
-
-
-// //         for(let day = 0; day < 7; day++){
-// //             const box = document.createElement("div");
-// //             box.classList.add("grid-cell"); 
-// //             box.dataset.row = hour;
-// //             box.dataset.col = day + 1;
-// //             box.style.border = "1px solid #ccc";
-// //             grid.appendChild(box)
-// //         }
-// //     }
-// // }
-
-// // function formatDate(date){
-// //     return date.toISOString().split("T")[0];
-// // }
-
-// // function displayWeekRange(startDate){
-// //     const endDate = new Date(startDate);
-// //     endDate.setDate(startDate.getDate() + 6);
-
-// //     const label = document.getElementById("weekLabel");
-// //     label.textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`
-// // }
-
-// // function getWeekStartDate(){
-// //     const today = new Date();
-// //     const day = today.getDay();
-// //     const diff = (day === 0 ? -6 : 1 - day);
-// //     const startDate = new Date(today);
-// //     startDate.setDate(today.getDate() + diff)
-// //     return new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-// // }
-
-
-// // function addDays(date, days){
-// //     const result = new Date(date);
-// //     result.setDate(date.getDate() + days);
-// //     return result;
-// // }
-
-// // function renderWeekGraph(){
-// //     const weekStart = getWeekStartDate();
-// //     displayWeekRange(weekStart);
-// //     createGraph(weekStart);
-
-// //     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-
-// //     tasks.forEach(task => {
-// //         (task.timeFragments || []).forEach(fragment => {
-// //             const fragmentDate = new Date(fragment.date);
-// //             const fragmentDayIndex = (fragmentDate.getDate() + 6) % 7;
-            
-// //             if(fragmentDate >= weekStart && fragmentDate < addDays(weekStart, 7)){
-// //                 const hours = parseInt(fragment.duration.split(":")[0]);
-
-// //                 for(let h = 0; h < hours; h++){
-// //                     const hour = 12 - h;
-// //                     const cell = document.querySelector(`.grid-cell[data-row="${hour}"][data-col="${fragmentDayIndex + 1}"]`);
-// //                     if(cell){
-// //                         cell.style.backgroundColor = "#76c7c0";
-// //                         cell.title = `${task.title || "Task"} (${fragment.duration})`;
-// //                     }
-// //                 }
-// //             }
-// //         });
-// //     });
-// // }
-
-// // // function renderWeekGraph(){
-// // //     const weekStart = getWeekStartDate();
-// // //     displayWeekRange(weekStart);
-// // //     createEmptyWeeklyGrid(weekStart);
-// // // }
-
-// // document.addEventListener("DOMContentLoaded", () => {
-// //     renderWeekGraph();
-// // });
-
-
-// const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-// const gridContainer = document.getElementById("gridContainer");
-
-
-// function generateWeeklyGraph(){
-//     gridContainer.innerHTML = "";
-
-//     gridContainer.style.display = "grid";
-//     gridContainer.style.gridTemplateColumns = `50px repeat(${colNum}, 1fr)`;
-//     gridContainer.style.gridTemplateRows = `40px repeat(${rowNum}, 1fr)`;
-
-//     const headerBlock = document.createElement("div");
-//     headerBlock.textContent = "";
-//     gridContainer.appendChild(headerBlock);
-
-//     for(let i = 0; i < weekDays.length;i++){
-//         const day = document.createElement("div");
-//         day.textContent = weekDays[i];
-//         gridContainer.appendChild(day)
-//     }
-
-//     for(let hour = 12; hour >= 1; hour--){
-//         const label = document.createElement("div");
-//         label.textContent = `${hour}hr`;
-//         gridContainer.appendChild(label);
-
-//         for(let day = 0; day < colName; day++){
-//             const cell = document.createElement("div");
-//             cell.classList.add("box");
-//             cell.classList.add(`row-${hour}`, `col-${day + 1}`);
-//             gridContainer.appendChild(cell);
-//         }
-//     }
-// }
 
 const GRAPH_SETTINGS = {
     timeUnit: "hours",
@@ -160,46 +21,126 @@ export const createGraph = (graphContainer) => {
     wrapper.appendChild(graph);
     container.innerHTML = "";
     container.appendChild(wrapper);
-
-    bindGraphEvents(controls, graph);
-    renderGraph(graph);
 };
 
+// Placeholder functions - Implementation needed
 const buildControls = () => {
-    const controlPanel = document.createElement("div");
-    controlPanel.className = "graph-controls";
-
-    controlPanel.innerHTML = `
-        <label>Period:
-            <select id="period-select">
-                <option value="1week">1 Week</option>
-                <option value="2week">2 Week</option>
-                <option value="1month">1 Month</option>
-                <option value="6month">6 Month</option>
-                <option value="1year">1 Year</option>
-            </select>
-        </label>
-        <label>Unit:
-            <select id="unit-select">
-                <option value="hours">Hours</option>
-                <option value="minutes">Minutes</option>
-            </select>
-        </label>
+    const controls = document.createElement("div");
+    controls.className = "analytics-controls";
+    controls.innerHTML = `
+        <label for="timePeriod">Period:</label>
+        <select id="timePeriod">
+            <option value="1week">1 Week</option>
+            <option value="2week">2 Weeks</option>
+            <option value="1month">1 Month</option>
+            <option value="6month">6 Months</option>
+            <option value="1year">1 Year</option>
+        </select>
+        <label for="timeUnit">Unit:</label>
+        <select id="timeUnit">
+            <option value="hours">Hours</option>
+            <option value="minutes">Minutes</option>
+        </select>
     `;
 
-    return controlPanel;
+    const timePeriodSelect = controls.querySelector("#timePeriod");
+    const timeUnitSelect = controls.querySelector("#timeUnit");
+
+    timePeriodSelect.value = GRAPH_SETTINGS.period;
+    timeUnitSelect.value = GRAPH_SETTINGS.timeUnit;
+
+    timePeriodSelect.addEventListener("change", (event) => {
+        GRAPH_SETTINGS.period = event.target.value;
+        renderGraph(document.querySelector(".analytics-graph"));
+    });
+
+    timeUnitSelect.addEventListener("change", (event) => {
+        GRAPH_SETTINGS.timeUnit = event.target.value;
+        renderGraph(document.querySelector(".analytics-graph"));
+    });
+
+    return controls;
 };
 
-const bindGraphEvents = (controls, graph) => {
-    controls.querySelector('#period-select').addEventListener("change", (e) => {
-        GRAPH_SETTINGS.period = e.target.value;
-        renderGraph(graph);
-    });
-    controls.querySelector('#unit-select').addEventListener("change", (e) => {
-        GRAPH_SETTINGS.timeUnit = e.target.value;
-        renderGraph(graph);
-    });
+const filterDataByPeriod = (data, period) => {
+    const now = new Date();
+    let startDate;
+
+    switch (period) {
+        case "1week":
+            startDate = new Date(now.setDate(now.getDate() - 7));
+            break;
+        case "2week":
+            startDate = new Date(now.setDate(now.getDate() - 14));
+            break;
+        case "1month":
+            startDate = new Date(now.setMonth(now.getMonth() - 1));
+            break;
+        case "6month":
+            startDate = new Date(now.setMonth(now.getMonth() - 6));
+            break;
+        case "1year":
+            startDate = new Date(now.setFullYear(now.getFullYear() - 1));
+            break;
+        default:
+            startDate = new Date(0); // All time
+    }
+
+    const startDateString = startDate.toISOString().split('T')[0];
+
+    return data.filter(entry => entry.date >= startDateString);
 };
+
+const getMaxTime = (data) => {
+    if (data.length === 0) return 0;
+    return Math.max(...data.map(entry => entry.minutes));
+};
+
+const normalizeMaxTime = (maxTime, timeUnit) => {
+    let normalizedMax = maxTime;
+    if (timeUnit === "hours") {
+        normalizedMax = Math.ceil(maxTime / 60); // Convert to hours and ceil
+        return (normalizedMax + 3) * 60; // Add 3 hours buffer, convert back to minutes
+    } else { // minutes
+        normalizedMax = Math.ceil(maxTime / 10) * 10; // Round up to nearest 10 minutes
+        return normalizedMax + 15; // Add 15 minutes buffer
+    }
+};
+
+const generateYAxisLabels = (normalizedMax, timeUnit) => {
+    const labels = [];
+    let interval = timeUnit === "hours" ? 60 : 10; // 1 hour or 10 minutes
+     if (timeUnit === "minutes" && normalizedMax / interval > 10) { // If too many labels for 10 min interval
+        interval = 15; // Use 15 minutes interval
+    }
+
+
+    for (let i = 0; i <= normalizedMax; i += interval) {
+        if (timeUnit === "hours") {
+            labels.push(`${i / 60} hours`);
+        } else {
+            labels.push(`${i} minutes`);
+        }
+    }
+    return labels;
+};
+
+const labelToMinutes = (label, timeUnit) => {
+    if (timeUnit === "hours") {
+        return parseFloat(label.replace(" hours", "")) * 60;
+    } else { // minutes
+        return parseInt(label.replace(" minutes", ""));
+    }
+};
+
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 
 const renderGraph = (graph) => {
     graph.innerHTML = "";
@@ -257,7 +198,7 @@ const renderGraph = (graph) => {
 };
 
 const fetchLocalStorageDate = () => {
-    const raw = localStorage.getItem("taskData");
+    const raw = localStorage.getItem("tasks");
     if(!raw) return [];
 
     let tasks;
@@ -296,4 +237,3 @@ const parseDurationToMinutes = (durationStr) => {
     const [hh, mm, ss] = parts;
     return hh * 60 + mm + ss / 60;
 }
-

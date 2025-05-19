@@ -1,5 +1,8 @@
 
 
+import { createGraph } from './analytics.js';
+import { saveTimerState, updateTaskCounters, renderPausedTaskTable } from './storage.js';
+
 // console.log("JS is runing");
 
 const mainSidebar = document.querySelector('.sidebar-aside');
@@ -256,58 +259,10 @@ function addNewTask(taskForm){
         timerStart();
     }
 
-    updateTaskCounters();
+    updateTaskCounters(totalTimeElement);
     renderPausedTaskTable();
     taskForm.remove();
 }
-
-function saveTimerState(task){
-    if (!task) return;
-    
-    const timerValue = document.getElementById("timer").textContent;
-
-    const timeFragment = {
-        date: new Date().toISOString().split('T')[0],
-        start: localStorage.getItem("timerStartTime") || new Date().toISOString(),
-        end: new Date().toISOString(),
-        duration: timerValue
-    };
-
-    if(!task.timeFragments){
-        task.timeFragments = [];
-    }
-
-    task.timeFragments.push(timeFragment);
-
-    if(!task.timeTaken || task.timeTaken === "00:00:00"){
-        task.timeTaken = timerValue;
-    } else {
-        task.timeTaken = addTimes(task.timeTaken, timerValue);
-    }
-    
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const index = tasks.findIndex(t => t.id === task.id);
-    if (index !== -1) {
-        tasks[index] = task;
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
-}
-
-
-function addTimes(time1, time2){
-    const [hours1, minutes1, seconds1] = time1.split(':').map(Number);
-    const [hours2, minutes2, seconds2] = time2.split(':').map(Number);
-
-    let totalSeconds = seconds1 + seconds2;
-    let totalMinutes = minutes1 + minutes2 + Math.floor(totalSeconds / 60);
-    totalSeconds %= 60;
-
-    let totalHours = hours1 + hours2 + Math.floor(totalMinutes / 60);
-    totalMinutes %= 60;
-
-    return `${totalHours.toString().padStart(2, '0')}:${totalMinutes.toString().padStart(2, '0')}:${totalSeconds.toString().padStart(2, '0')}`;
-}
-
 
 function resetTimer(){
     clearInterval(timer);
@@ -339,7 +294,7 @@ function pauseCurrentTask(){
         localStorage.removeItem("activeTaskId");
         clearOngoingTaskDisplay();
 
-        updateTaskCounters();
+        updateTaskCounters(totalTimeElement);
         renderPausedTaskTable();
     }
 }
@@ -363,7 +318,7 @@ function completeCurrentTask(){
         localStorage.removeItem("activeTaskId");
         clearOngoingTaskDisplay();
 
-        updateTaskCounters();
+        updateTaskCounters(totalTimeElement);
         renderPausedTaskTable();
     }
 }
@@ -390,7 +345,7 @@ function resumeTask(taskId){
     }
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
-    updateTaskCounters();
+    updateTaskCounters(totalTimeElement);
     renderPausedTaskTable();
 }
 
@@ -410,7 +365,7 @@ function completeTask(taskId){
             timerEnd();
         }
 
-        updateTaskCounters();
+        updateTaskCounters(totalTimeElement);
         renderPausedTaskTable();
     }
 }
@@ -429,7 +384,7 @@ function deleteTask(taskId){
         timerEnd();
     }
 
-    updateTaskCounters();
+    updateTaskCounters(totalTimeElement);
     renderPausedTaskTable();
 }
 
@@ -496,90 +451,6 @@ function formatTimeFragment(fragments){
 
     const lastThree = fragments.slice(-3);
     return lastThree.map(frag => `${frag.date}: ${frag.duration}`).join("<br>");
-}
-
-
-function updateTaskCounters(){
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-
-    // console.log(tasks);
-    // if(tasks.length > 0){
-    //     console.log(typeof tasks[0].duration, tasks[0].duration);
-    // }
-
-    const timerStack = [];
-    let totalTime = 0;
-    const totalCount = tasks.length;
-    const pausedCount = tasks.filter(t => t.status === "paused").length;
-    const completedCount = tasks.filter(t => t.status === "completed").length;
-
-    for(let i = 0; i < totalCount; i++){
-        timerStack.push(tasks[i].timeTaken);
-    }
-
-    for(let i = 0; i< timerStack.length; i++){
-        totalTime += timeStringSpliting(timerStack[i]);
-    }
-
-    if(totalTime > 0){
-        totalTimeElement.textContent = formatTimeToSeconds(totalTime);
-    }
-
-    if (totalCountElement) totalCountElement.textContent = totalCount;
-    if (completedCountElement) completedCountElement.textContent = completedCount;
-    if (pausedCountElement) pausedCountElement.textContent = pausedCount;
-}
-
-
-// function renderPausedTaskTable(){
-//     renderPausedTaskTable();
-// }
-
-function timeStringSpliting(time){
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return (hours * 3600) + (minutes * 60) + seconds;
-}
-
-function formatTimeToSeconds(time){
-  
-    const h = Math.floor(time / 3600);
-    const m = Math.floor((time % 3600) / 60);
-    const s = time % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-
-}
-
-
-function renderPausedTaskTable(){
-    const pausedTableBody = document.getElementById('pausedTaskTableBody');
-    if(!pausedTableBody) return;
-
-    pausedTableBody.innerHTML = "";
-
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const pausedTasks = tasks.filter(t => t.status === "paused");
-
-    pausedTasks.forEach((task, index) => {
-
-        const row = document.createElement("tr");
-        const timeFragmentsHtml = formatTimeFragment(task.timeFragments);
-
-        row.innerHTML = `
-        
-            <td>${task.name}</td>
-            <td><span class="priority-badge priority-${task.priority}">${task.priority}</span></td>
-            <td><span class="tag-badge">${task.tag}</span></td> 
-            <td>${task.startDate}</td>
-            <td>${task.targetDate || "--"}</td>
-            <td>${task.timeTaken || "00:00:00"}</td>
-            <td>${timeFragmentsHtml}</td>
-            <td>
-                <button class="action-btn more-btn" onclick="showDetailsModal('${task.id}')">More</button>
-            </td>  
-        `;
-        pausedTableBody.appendChild(row);
-    });
 }
 
 
@@ -926,7 +797,7 @@ function updateTaskData(taskId, editForm){
 
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
-    updateTaskCounters();
+    updateTaskCounters(totalTimeElement);
     renderPausedTaskTable();
 }
 
@@ -1017,7 +888,7 @@ function initApp() {
         clearOngoingTaskDisplay();
     }
     
-    updateTaskCounters();
+    updateTaskCounters(totalTimeElement);
     renderPausedTaskTable();
     
 
@@ -1056,167 +927,9 @@ function initializeAnalytics() {
 
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     
-
-
     // createStatusChart(tasks);
-   
-    createTimeChart(tasks);
+    createGraph(analyticsContainer);
 }
-
-// function createStatusChart(tasks) {
-//     const statusCounts = {
-//         'ongoing': 0,
-//         'paused': 0,
-//         'completed': 0
-//     };
-    
-//     tasks.forEach(task => {
-//         statusCounts[task.status] = (statusCounts[task.status] || 0) + 1;
-//     });
-    
-//     const ctx = document.getElementById('statusChart').getContext('2d');
-//     new Chart(ctx, {
-//         type: 'doughnut',
-//         data: {
-//             labels: ['Ongoing', 'Paused', 'Completed'],
-//             datasets: [{
-//                 data: [statusCounts.ongoing, statusCounts.paused, statusCounts.completed],
-//                 backgroundColor: [
-//                     'rgba(58, 110, 165, 0.7)',
-//                     'rgba(255, 159, 28, 0.7)',
-//                     'rgba(40, 167, 69, 0.7)'
-//                 ],
-//                 borderColor: [
-//                     'rgb(58, 110, 165)',
-//                     'rgb(255, 159, 28)',
-//                     'rgb(40, 167, 69)'
-//                 ],
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             responsive: true,
-//             plugins: {
-//                 legend: {
-//                     position: 'bottom',
-//                 },
-//                 tooltip: {
-//                     callbacks: {
-//                         label: function(context) {
-//                             const label = context.label || '';
-//                             const value = context.raw || 0;
-//                             const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-//                             const percentage = Math.round((value / total) * 100);
-//                             return `${label}: ${value} (${percentage}%)`;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     });
-// }
-
-function createTimeChart(tasks) { 
-
-    const dates = [];
-    const timeSpent = [];
-    
-    for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        dates.push(dateStr.substring(5)); 
-
-        let dayTotalSeconds = 0;
-        
-        // const dayTotal = tasks.reduce((total, task) => {
-        //     const taskDate = task.timeTaken && task.timeTaken[dateStr];
-        //     return total + (taskDate || 0);
-        // }, 0);
-
-        tasks.forEach(task => {
-            if(task.timeFragments && Array.isArray(task.timeFragments)){
-                task.timeFragments.forEach(fragment => {
-                    if(fragment.date === dateStr && fragment.duration){
-                        // const [h, m, s] = fragment.duration.split(":").map(Number);
-
-                        const parts = fragment.duration.split(":").map(Number);
-                        const h = parts[0] || 0;
-                        const m = parts[1] || 0;
-                        const s = parts[2] || 0;
-
-                        dayTotalSeconds += h * 3600 + m * 60 + s;
-                    }
-                });
-            } 
-        });
-        
-        // timeSpent.push(parseFloat(dayTotalSeconds / 3600).toFixed(2)); 
-        // timeSpent.push(Number((dayTotalSeconds / 3600).toFixed(2)));
-        timeSpent.push(dayTotalSeconds);
-    }
-    const maxTime = Math.max(...timeSpent);
-    const roundedMax = Math.ceil(maxTime / 60) * 60 || 60;
-
-    const ctx = document.getElementById('timeChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Hours',
-                data: timeSpent,
-                fill: true,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                tension: 0.3,
-                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-                pointRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: roundedMax,
-                    title: {
-                        display: true,
-                        text: 'seconds'
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            // return value.toFixed(1);
-                            return value + ' sec';
-                        }
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Date (MM-DD)'
-                    }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const totalSeconds = context.raw;
-                            const min = Math.floor(totalSeconds / 60);
-                            const sec = totalSeconds % 60;
-                            // return `Time spent: ${context.raw.toFixed(2)} hours`;
-                            return `Time spent: ${min}m ${sec}s`;
-                        }
-                    } 
-                }
-            }
-        }
-    });
-}
-
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1245,3 +958,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', initApp);
 document.addEventListener('DOMContentLoaded', initApp);
+
+document9

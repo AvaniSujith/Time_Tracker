@@ -111,7 +111,7 @@
             <div class="time"></div>
             <div class="date"></div>
         </div>
-
+        
         <div class="search">
 
             <div class="search-bar">
@@ -158,35 +158,30 @@
             <ul class="nav-list primary-nav">
                 <li class="nav-item active">
                     <a href="#" class="nav-link" data-page="dashboard">
-                        <!-- <i class="bx bx-time"></i> -->
                         <span class="nav-icon material-symbols-rounded">dashboard</span>
                         <span class="nav-label">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-page="works-done">
-                        <!-- <i class="bx bx-chart"></i> -->
                         <span class="nav-icon material-symbols-rounded">task_alt</span>
                         <span class="nav-label">Tasks Page</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-page="analytics">
-                        <!-- <i class="bx bx-chart"></i> -->
                         <span class="nav-icon material-symbols-rounded">analytics</span>
                         <span class="nav-label">Comparison</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-page="search">
-                        <!-- <i class="bx bx-cog"></i> -->
                         <span class="nav-icon material-symbols-rounded">search</span>
                         <span class="nav-label">Search & Filter</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-page="profile">
-                        <!-- <i class="bx bx-chart"></i> -->
                         <span class="nav-icon material-symbols-rounded">person</span>
                         <span class="nav-label">Profile</span>
                     </a>
@@ -196,14 +191,12 @@
             <ul class="nav-list secondary-nav">
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <!-- <i class="bx bx-chart"></i> -->
                         <span class="nav-icon material-symbols-rounded">settings</span>
                         <span class="nav-label">Settings</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <!-- <i class="bx bx-cog"></i> -->
                         <span class="nav-icon material-symbols-rounded">logout</span>
                         <span class="nav-label">Logout</span>
                     </a>
@@ -354,8 +347,8 @@
             
             <div id="graphContainer"></div>
           
-            <div class="analytics-container">
-            </div>
+            <!-- <div class="analytics-container">
+            </div> -->
         </div>
 
         <div class="page" id="search-page">
@@ -500,13 +493,14 @@
             </div>
         </div>
     </main>
-      <!-- <script src="analytics.js"></script> -->
-      <script src="authentication.js"></script>
-      <script src="dateAndTime.js"></script>
-      <script src="task.js"></script> 
-      <script src="filter.js"></script>
-      <script src="authPage.js"></script>
-      <script src="storage.js"></script>
+
+        <script src="analytics.js" type="module"></script>
+        <script src="authentication.js"></script>
+        <script src="dateAndTime.js"></script>
+        <script src="task.js" type="module"></script> 
+        <script src="filter.js"></script>
+        <script src="authPage.js"></script>
+        <script src="storage.js" type="module"></script>
 
 
 </body> 

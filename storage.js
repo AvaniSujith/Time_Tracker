@@ -32,7 +32,7 @@ export function saveTimerState(task){
     }
 }
 
-export function updateTaskCounters(){
+export function updateTaskCounters(totalTimeElement){
     
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -60,7 +60,9 @@ export function updateTaskCounters(){
     }
 
     const totalCountElement = document.getElementById("total-count");
-    const completedCountElement = document.getElementById()
+    const completedCountElement = document.getElementById("completed-count");
+    const pausedCountElement = document.getElementById("paused-count");
+
 
     if (totalCountElement) totalCountElement.textContent = totalCount;
     if (completedCountElement) completedCountElement.textContent = completedCount;
@@ -136,4 +138,3 @@ function formatTimeFragment(fragments){
     const lastThree = fragments.slice(-3);
     return lastThree.map(frag => `${frag.date}: ${frag.duration}`).join("<br>");
 }
-
