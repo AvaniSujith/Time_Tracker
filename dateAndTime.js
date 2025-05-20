@@ -12,8 +12,8 @@ function getTime(date){
 }
 
 function getDate(date){
-    // date.getMonth()
-
+    // date.getMonth();
+    
     const DAYS = [
         "Sunday",
         "Monday",

@@ -1,5 +1,3 @@
-
-
 export let timer = null;
 let seconds = 0;
 let minutes = 0; 
@@ -14,7 +12,6 @@ export function initializeTimer({ timerEl, startBtn, pauseBtn, endBtn }){
     updateTimerDisplay();
 
 }
-
 
 let timerDisplay;
 let startTimerBtn;
