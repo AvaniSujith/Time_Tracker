@@ -55,7 +55,7 @@ export function updateCurrentUser(updates){
     const idx = users.findIndex(u => u.email === user.email);
     if(idx !== -1){
         users[idx] = updatedUser;
-        saveUsers(user);
+        saveUsers(users);
     }
     return updatedUser;
 }
