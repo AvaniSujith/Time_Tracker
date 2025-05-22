@@ -26,24 +26,3 @@ export function formatHMS(secTotal){
         .join(':');
 }
 
-
-export function timeStringSpliting(time){
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return (hours * 3600) + (minutes * 60) + seconds;
-}
-
-export function formatTimeToSeconds(time){
-  
-    const h = Math.floor(time / 3600);
-    const m = Math.floor((time % 3600) / 60);
-    const s = time % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-
-}
-
-export function formatTimeFragment(fragments){
-    if(!Array.isArray(fragments) || fragments.length === 0) return "--";
-
-    const lastThree = fragments.slice(-3);
-    return lastThree.map(frag => `${frag.date}: ${frag.duration}`).join("<br>");
-}

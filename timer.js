@@ -3,7 +3,6 @@ let seconds = 0;
 let minutes = 0; 
 let hours = 0;
 
-
 export function initializeTimer({ timerEl, startBtn, pauseBtn, endBtn }){
     timerDisplay = timerEl;
     startTimerBtn = startBtn;
