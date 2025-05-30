@@ -22,8 +22,6 @@ export const createGraph = (graphContainer) => {
     container.innerHTML = "";
     container.appendChild(wrapper);
 };
-
-// Placeholder functions - Implementation needed
 const buildControls = () => {
     const controls = document.createElement("div");
     controls.className = "analytics-controls";
@@ -99,19 +97,19 @@ const getMaxTime = (data) => {
 const normalizeMaxTime = (maxTime, timeUnit) => {
     let normalizedMax = maxTime;
     if (timeUnit === "hours") {
-        normalizedMax = Math.ceil(maxTime / 60); // Convert to hours and ceil
-        return (normalizedMax + 3) * 60; // Add 3 hours buffer, convert back to minutes
-    } else { // minutes
-        normalizedMax = Math.ceil(maxTime / 10) * 10; // Round up to nearest 10 minutes
-        return normalizedMax + 15; // Add 15 minutes buffer
+        normalizedMax = Math.ceil(maxTime / 60); 
+        return (normalizedMax + 3) * 60; 
+    } else { 
+        normalizedMax = Math.ceil(maxTime / 10) * 10; 
+        return normalizedMax + 15;
     }
 };
 
 const generateYAxisLabels = (normalizedMax, timeUnit) => {
     const labels = [];
-    let interval = timeUnit === "hours" ? 60 : 10; // 1 hour or 10 minutes
-     if (timeUnit === "minutes" && normalizedMax / interval > 10) { // If too many labels for 10 min interval
-        interval = 15; // Use 15 minutes interval
+    let interval = timeUnit === "hours" ? 60 : 10; 
+     if (timeUnit === "minutes" && normalizedMax / interval > 10) { 
+        interval = 15;
     }
 
 
@@ -128,7 +126,7 @@ const generateYAxisLabels = (normalizedMax, timeUnit) => {
 const labelToMinutes = (label, timeUnit) => {
     if (timeUnit === "hours") {
         return parseFloat(label.replace(" hours", "")) * 60;
-    } else { // minutes
+    } else { 
         return parseInt(label.replace(" minutes", ""));
     }
 };
@@ -237,3 +235,5 @@ const parseDurationToMinutes = (durationStr) => {
     const [hh, mm, ss] = parts;
     return hh * 60 + mm + ss / 60;
 }
+
+createGraph();

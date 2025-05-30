@@ -1,3 +1,4 @@
+// storage.js 
 export function saveTimerState(task){
 
     if (!task) return;
@@ -97,7 +98,6 @@ export function renderPausedTaskTable(){
                 <button class="action-btn more-btn" onclick="showDetailsModal('${task.id}')">More</button>
             </td>  
         `;
-
         pausedTableBody.appendChild(row);
     });
 }

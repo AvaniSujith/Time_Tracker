@@ -1,5 +1,4 @@
 
-
 import { createGraph } from './analytics.js';
 import { saveTimerState, updateTaskCounters, renderPausedTaskTable } from './storage.js';
 
@@ -276,7 +275,6 @@ function resetTimer(){
     localStorage.setItem("timerStartTime", new Date().toISOString());
 }
 
-
 function pauseCurrentTask(){
     const activeTaskId = localStorage.getItem("activeTaskId");
     if (!activeTaskId) return;
@@ -286,7 +284,7 @@ function pauseCurrentTask(){
 
     if(task){
         saveTimerState(task);
-
+        
         task.status = 'paused';
         localStorage.setItem("tasks", JSON.stringify(tasks));
 
